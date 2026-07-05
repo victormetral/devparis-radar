@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DevParis Radar</title>
+  </head>
+
+  <body>
+    <header>
+      <h1>DevParis Radar</h1>
+      <p>Trouve des lieux d’innovation, de coworking et de réseau tech à Paris.</p>
+    </header>
+
+    <main>
+  <section class="controls">
+    <label for="search-input">Rechercher un lieu</label>
+    <input
+      id="search-input"
+      type="text"
+      placeholder="Exemple : Montreuil, Paris 19e, innovation..."
+    />
+    
+    <label for="commune-select">Filtrer par commune</label>
+<select id="commune-select">
+  <option value="Toutes">Toutes les communes</option>
+</select>
+  </section>
+
+  <section>
+    <h2>Lieux trouvés</h2>
+    <p>
+      Nombre de lieux affichés :
+      <span id="counter">0</span>
+    </p>
+  </section>
+
+  <section id="places-container">
+    <!-- Les cartes seront ajoutées ici avec JavaScript -->
+  </section>
+  </main>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
