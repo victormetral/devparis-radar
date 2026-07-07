@@ -7,33 +7,44 @@
   </head>
 
   <body>
-    <header>
+    <header class="site-header">
+      <p class="site-header__tagline">
+        OpenData Paris · Innovation · Coworking</p>
       <h1>DevParis Radar</h1>
-      <p>Trouve des lieux d’innovation, de coworking et de réseau tech à Paris.</p>
+      <p class="site-header__description">
+        Trouve des lieux d’innovation, de coworking et de réseau tech à Paris.
+      </p>
     </header>
 
     <main>
-  <section class="controls">
+
+      <section class="controls">
+  <div class="controls__field">
     <label for="search-input">Rechercher un lieu</label>
     <input
       id="search-input"
       type="text"
       placeholder="Exemple : Montreuil, Paris 19e, innovation..."
     />
-    
-    <label for="commune-select">Filtrer par commune</label>
-<select id="commune-select">
-  <option value="Toutes">Toutes les communes</option>
-</select>
-  </section>
+  </div>
 
-  <section>
+  <div class="controls__field">
+    <label for="commune-select">Filtrer par commune</label>
+    <select id="commune-select">
+      <option value="Toutes">Toutes les communes</option>
+    </select>
+  </div>
+  </section>
+  
+<section class="results-header">
+  <div>
     <h2>Lieux trouvés</h2>
     <p>
       Nombre de lieux affichés :
       <span id="counter">0</span>
     </p>
-  </section>
+  </div>
+</section>
 
   <section id="places-container">
   </section>

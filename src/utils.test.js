@@ -14,6 +14,7 @@ describe("formaterLieu", () => {
       commune: "Paris",
       typologie: "Incubateur",
       type_innovation: "Innovation tech",
+      etat: "existant",
     }
 
     const resultat = formaterLieu(lieuApi)
@@ -24,6 +25,7 @@ describe("formaterLieu", () => {
       commune: "Paris",
       typologie: "Incubateur",
       typeInnovation: "Innovation tech",
+      etat: "existant",
     })
   })
 
@@ -38,6 +40,7 @@ describe("formaterLieu", () => {
       commune: "Commune inconnue",
       typologie: "Typologie inconnue",
       typeInnovation: "Type d'innovation inconnu",
+      etat: "État inconnu",
     })
   })
 })

@@ -3,6 +3,7 @@ export const formaterLieu = (lieu) => {
     nom: lieu.nom || "Nom inconnu",
     adresse: lieu.adresse || "Adresse inconnue",
     commune: lieu.commune || "Commune inconnue",
+    etat: lieu.etat || "État inconnu",
     typologie: lieu.typologie || "Typologie inconnue",
     typeInnovation: lieu.type_innovation || "Type d'innovation inconnu",
   }

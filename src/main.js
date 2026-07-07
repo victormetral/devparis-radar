@@ -1,5 +1,5 @@
 import './style.css'
-import './reset.css'
+
 import {
   formaterLieu,
   filtrerParRecherche,
@@ -42,14 +42,15 @@ const afficherLieux = (lieux) => {
 
   lieux.forEach((lieu) => {
     const card = document.createElement('article')
+    card.classList.add('place-card')
 
-    card.innerHTML = `
-      <h3>${lieu.nom}</h3>
-      <p><strong>Adresse :</strong> ${lieu.adresse}</p>
-      <p><strong>Commune :</strong> ${lieu.commune}</p>
-      <p><strong>Typologie :</strong> ${lieu.typologie}</p>
-      <p><strong>Innovation :</strong> ${lieu.typeInnovation}</p>
-    `
+card.innerHTML = `
+  <h3>${lieu.nom}</h3>
+  <p><strong>Adresse :</strong> ${lieu.adresse}</p>
+  <p><strong>Commune :</strong> ${lieu.commune}</p>
+  <p><strong>Typologie :</strong> ${lieu.typologie}</p>
+  <p><strong>Innovation :</strong> ${lieu.typeInnovation}</p>
+`
 
     placesContainer.appendChild(card)
   })
