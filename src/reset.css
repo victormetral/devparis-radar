@@ -3,7 +3,7 @@
 *::after {
   box-sizing: border-box;
 }
-
+/* Force tous les éléments à garder leur largeur totale même avec padding et bordure. */
 body {
   margin: 0;
 }

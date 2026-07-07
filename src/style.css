@@ -1,7 +1,27 @@
+:root {
+  --color-bg: #f5f5f5;
+  --color-surface: #ffffff;
+  --color-text: #1f2937;
+  --color-muted: #555555;
+  --color-primary: #2b5cff;
+  --color-border: #dddddd;
+
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  --radius-sm: 8px;
+  --radius-md: 10px;
+
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 20px;
+  --space-xl: 30px;
+}
+
 body {
   font-family: Arial, sans-serif;
-  margin: 30px;
-  background-color: #f5f5f5;
+  margin: var(--space-xl);
+  background-color: var(--color-bg);
+  color: var(--color-text);
 }
 
 h1 {
@@ -17,20 +37,19 @@ h1 {
 }
 
 article {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,.1);
-  /* Ajoute une ombre légère sous l'élément */
+  background: var(--color-surface);
+  padding: var(--space-lg);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
 }
 
 article h3 {
   margin-top: 0;
-  color: #2b5cff;
+  color: var(--color-primary);
 }
 
 article p {
-  margin: 6px 0;
+  margin: var(--space-sm) 0;
 }
 
 .controls {
@@ -45,11 +64,12 @@ article p {
 }
 
 .controls input,
-.controls select {  width: 100%;
+.controls select {
+  width: 100%;
   max-width: 500px;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  padding: var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
   font-size: 16px;
 }
 
@@ -59,5 +79,5 @@ article p {
 
 .empty-message {
   font-weight: bold;
-  color: #555;
+  color: var(--color-muted);
 }
