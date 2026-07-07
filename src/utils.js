@@ -33,5 +33,5 @@ export const filtrerParCommune = (lieux, commune) => {
 export const getCommunesUniques = (lieux) => {
   const communes = lieux.map((lieu) => lieu.commune)
 
-  return [...new Set(communes)].sort()
+  return [...new Set(communes)].sort() // Supprime les doublons avec Set, puis trie les communes par ordre alphabétique
 }

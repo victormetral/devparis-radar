@@ -11,6 +11,7 @@ h1 {
 #places-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  /* Ajuste la largeur minimale des cartes, grille responsive */
   gap: 20px;
   margin-top: 30px;
 }
@@ -20,6 +21,7 @@ article {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0,0,0,.1);
+  /* Ajoute une ombre légère sous l'élément */
 }
 
 article h3 {

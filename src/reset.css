@@ -1,0 +1,21 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+img,
+video {
+  max-width: 100%;
+  display: block;
+}
+
+input,
+select,
+button {
+  font: inherit;
+}
