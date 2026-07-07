@@ -17,6 +17,8 @@ describe("formaterLieu", () => {
       typologie: "Incubateur",
       type_innovation: "Innovation tech",
       etat: "existant",
+      texte_descriptif: "Grand lieu d’innovation à Paris",
+site_internet: "https://example.com",
     }
 
     const resultat = formaterLieu(lieuApi)
@@ -28,6 +30,8 @@ describe("formaterLieu", () => {
       typologie: "Incubateur",
       typeInnovation: "Innovation tech",
       etat: "existant",
+      description: "Grand lieu d’innovation à Paris",
+siteInternet: "https://example.com",
     })
   })
 
@@ -43,6 +47,8 @@ describe("formaterLieu", () => {
       typologie: "Typologie inconnue",
       typeInnovation: "Type d'innovation inconnu",
       etat: "État inconnu",
+      description: "Description non disponible",
+siteInternet: "",
     })
   })
 })

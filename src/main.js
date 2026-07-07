@@ -66,6 +66,12 @@ card.innerHTML = `
   <p><strong>Commune :</strong> ${lieu.commune}</p>
   <p><strong>Typologie :</strong> ${lieu.typologie}</p>
   <p><strong>Innovation :</strong> ${lieu.typeInnovation}</p>
+  <p class="place-card__description">${lieu.description}</p>
+  ${
+    lieu.siteInternet
+      ? `<a class="place-card__link" href="${lieu.siteInternet}" target="_blank" rel="noreferrer">Voir le site</a>`
+      : ""
+  }
 `
 
     placesContainer.appendChild(card)

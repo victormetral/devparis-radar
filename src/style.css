@@ -153,6 +153,27 @@ body {
   margin: var(--space-sm) 0;
 }
 
+.place-card__description {
+  color: var(--color-muted);
+  line-height: 1.5;
+}
+
+.place-card__link {
+  display: inline-block;
+  width: fit-content;
+  margin-top: var(--space-sm);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-primary);
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.place-card__link:hover {
+  opacity: 0.9;
+}
+
 .place-card__status {
   display: inline-block;
   width: fit-content;

@@ -6,6 +6,8 @@ export const formaterLieu = (lieu) => {
     etat: lieu.etat || "État inconnu",
     typologie: lieu.typologie || "Typologie inconnue",
     typeInnovation: lieu.type_innovation || "Type d'innovation inconnu",
+    description: lieu.texte_descriptif || "Description non disponible",
+    siteInternet: lieu.site_internet || "",
   }
 }
 
