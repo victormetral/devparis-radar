@@ -4,6 +4,8 @@ import {
   filtrerParRecherche,
   filtrerParCommune,
   getCommunesUniques,
+  filtrerParEtat,
+getEtatsUniques,
 } from "./utils.js"
 
 describe("formaterLieu", () => {
@@ -169,5 +171,43 @@ describe("getCommunesUniques", () => {
     const resultat = getCommunesUniques(lieux)
 
     expect(resultat).toEqual(["Montreuil", "Paris"])
+  })
+})
+
+describe("filtrerParEtat", () => {
+  it("filtre les lieux selon l'état", () => {
+    const lieux = [
+      { nom: "Lieu A", etat: "existant" },
+      { nom: "Lieu B", etat: "projet" },
+    ]
+
+    const resultat = filtrerParEtat(lieux, "projet")
+
+    expect(resultat).toEqual([{ nom: "Lieu B", etat: "projet" }])
+  })
+
+  it("retourne tous les lieux si l'état vaut Tous", () => {
+    const lieux = [
+      { nom: "Lieu A", etat: "existant" },
+      { nom: "Lieu B", etat: "projet" },
+    ]
+
+    const resultat = filtrerParEtat(lieux, "Tous")
+
+    expect(resultat).toEqual(lieux)
+  })
+})
+
+describe("getEtatsUniques", () => {
+  it("retourne une liste d'états sans doublons et triée", () => {
+    const lieux = [
+      { etat: "projet" },
+      { etat: "existant" },
+      { etat: "projet" },
+    ]
+
+    const resultat = getEtatsUniques(lieux)
+
+    expect(resultat).toEqual(["existant", "projet"])
   })
 })

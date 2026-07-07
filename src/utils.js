@@ -36,3 +36,17 @@ export const getCommunesUniques = (lieux) => {
 
   return [...new Set(communes)].sort() // Supprime les doublons avec Set, puis trie les communes par ordre alphabétique
 }
+
+export const filtrerParEtat = (lieux, etat) => {
+  if (etat === "Tous") {
+    return lieux
+  }
+
+  return lieux.filter((lieu) => lieu.etat === etat)
+}
+
+export const getEtatsUniques = (lieux) => {
+  const etats = lieux.map((lieu) => lieu.etat)
+
+  return [...new Set(etats)].sort()
+}

@@ -4,7 +4,9 @@ import {
   formaterLieu,
   filtrerParRecherche,
   filtrerParCommune,
+  filtrerParEtat,
   getCommunesUniques,
+  getEtatsUniques,
 } from './utils.js'
 
 const API_URL =
@@ -14,7 +16,7 @@ const placesContainer = document.querySelector('#places-container')
 const counter = document.querySelector('#counter')
 const searchInput = document.querySelector('#search-input')
 const communeSelect = document.querySelector('#commune-select')
-
+const etatSelect = document.querySelector('#etat-select')
 let tousLesLieux = []
 
 const remplirSelectCommunes = (lieux) => {
@@ -27,6 +29,19 @@ const remplirSelectCommunes = (lieux) => {
     option.textContent = commune
 
     communeSelect.appendChild(option)
+  })
+}
+
+const remplirSelectEtats = (lieux) => {
+  const etats = getEtatsUniques(lieux)
+
+  etats.forEach((etat) => {
+    const option = document.createElement('option')
+
+    option.value = etat
+    option.textContent = etat
+
+    etatSelect.appendChild(option)
   })
 }
 
@@ -46,6 +61,7 @@ const afficherLieux = (lieux) => {
 
 card.innerHTML = `
   <h3>${lieu.nom}</h3>
+  <p class="place-card__status">${lieu.etat}</p>
   <p><strong>Adresse :</strong> ${lieu.adresse}</p>
   <p><strong>Commune :</strong> ${lieu.commune}</p>
   <p><strong>Typologie :</strong> ${lieu.typologie}</p>
@@ -61,9 +77,11 @@ card.innerHTML = `
 const appliquerFiltres = () => {
   const recherche = searchInput.value
   const commune = communeSelect.value
+  const etat = etatSelect.value
 
   let lieuxFiltres = filtrerParRecherche(tousLesLieux, recherche)
   lieuxFiltres = filtrerParCommune(lieuxFiltres, commune)
+  lieuxFiltres = filtrerParEtat(lieuxFiltres, etat)
 
   afficherLieux(lieuxFiltres)
 }
@@ -74,11 +92,13 @@ const chargerLieux = async () => {
 
   tousLesLieux = data.results.map((lieu) => formaterLieu(lieu))
 
-  remplirSelectCommunes(tousLesLieux)
-  afficherLieux(tousLesLieux)
+remplirSelectCommunes(tousLesLieux)
+remplirSelectEtats(tousLesLieux)
+afficherLieux(tousLesLieux)
 }
 
 searchInput.addEventListener('input', appliquerFiltres)
 communeSelect.addEventListener('change', appliquerFiltres)
+etatSelect.addEventListener('change', appliquerFiltres)
 
 chargerLieux()
