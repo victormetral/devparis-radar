@@ -21,16 +21,26 @@ export const formaterLieu = (lieu) => {
   }
 }
 
+const texteContient = (valeur, recherche) => {
+  return String(valeur).toLowerCase().includes(recherche)
+}
+
 export const filtrerParRecherche = (lieux, recherche) => {
-  const rechercheMinuscule = recherche.toLowerCase()
+  const rechercheMinuscule = recherche.trim().toLowerCase()
+
+  if (rechercheMinuscule === "") {
+    return lieux
+  }
 
   return lieux.filter((lieu) => {
     return (
-      lieu.nom.toLowerCase().includes(rechercheMinuscule) ||
-      lieu.adresse.toLowerCase().includes(rechercheMinuscule) ||
-      lieu.commune.toLowerCase().includes(rechercheMinuscule) ||
-      lieu.typologie.toLowerCase().includes(rechercheMinuscule) ||
-      lieu.typeInnovation.toLowerCase().includes(rechercheMinuscule)
+      texteContient(lieu.nom, rechercheMinuscule) ||
+      texteContient(lieu.adresse, rechercheMinuscule) ||
+      texteContient(lieu.commune, rechercheMinuscule) ||
+      texteContient(lieu.etat, rechercheMinuscule) ||
+      texteContient(lieu.typologie, rechercheMinuscule) ||
+      texteContient(lieu.typeInnovation, rechercheMinuscule) ||
+      texteContient(lieu.description, rechercheMinuscule)
     )
   })
 }
@@ -43,18 +53,18 @@ export const filtrerParCommune = (lieux, commune) => {
   return lieux.filter((lieu) => lieu.commune === commune)
 }
 
-export const getCommunesUniques = (lieux) => {
-  const communes = lieux.map((lieu) => lieu.commune)
-
-  return [...new Set(communes)].sort() // Supprime les doublons avec Set, puis trie les communes par ordre alphabétique
-}
-
 export const filtrerParEtat = (lieux, etat) => {
   if (etat === "Tous") {
     return lieux
   }
 
   return lieux.filter((lieu) => lieu.etat === etat)
+}
+
+export const getCommunesUniques = (lieux) => {
+  const communes = lieux.map((lieu) => lieu.commune)
+
+  return [...new Set(communes)].sort()
 }
 
 export const getEtatsUniques = (lieux) => {

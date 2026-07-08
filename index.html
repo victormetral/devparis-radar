@@ -8,66 +8,116 @@
 
   <body>
     <header class="site-header">
-      <p class="site-header__tagline">
-        OpenData Paris · Innovation · Coworking</p>
-      <h1>DevParis Radar</h1>
-      <p class="site-header__description">
-        Trouve des lieux d’innovation, de coworking et de réseau tech à Paris.
-      </p>
+      <section class="hero">
+        <div class="hero__content">
+          <p class="site-header__tagline">OpenData Paris · Tech · Innovation</p>
+
+          <h1>DevParis Radar</h1>
+
+          <p class="site-header__description">
+            Explore les lieux tech, fablabs, espaces d’innovation, coworking et
+            projets numériques autour de Paris.
+          </p>
+        </div>
+
+        <div class="hero__visual" aria-hidden="true">
+          <div class="hero__card hero__card--primary">
+            <span>API</span>
+            <strong>OpenData Paris</strong>
+          </div>
+
+          <div class="hero__card hero__card--secondary">
+            <span>Carte</span>
+            <strong>Leaflet</strong>
+          </div>
+
+          <div class="hero__card hero__card--tertiary">
+            <span>Projet</span>
+            <strong>Portfolio JS</strong>
+          </div>
+        </div>
+      </section>
     </header>
 
-    <main>
+    <main class="app-layout">
+      <section class="app-content">
+        <section class="controls" aria-label="Filtres de recherche">
+          <div class="controls__field">
+            <label for="search-input">Rechercher un lieu</label>
+            <input
+              id="search-input"
+              type="text"
+              placeholder="Exemple : fablab, coworking, startup..."
+            />
+          </div>
 
-      <section class="controls">
-  <div class="controls__field">
-    <label for="search-input">Rechercher un lieu</label>
-    <input
-      id="search-input"
-      type="text"
-      placeholder="Exemple : Montreuil, Paris 19e, innovation..."
-    />
-  </div>
+          <div class="controls__field">
+            <label for="commune-select">Filtrer par commune</label>
+            <select id="commune-select">
+              <option value="Toutes">Toutes les communes</option>
+            </select>
+          </div>
 
-  <div class="controls__field">
-    <label for="commune-select">Filtrer par commune</label>
-    <select id="commune-select">
-      <option value="Toutes">Toutes les communes</option>
-    </select>
-  </div>
+          <div class="controls__field">
+            <label for="etat-select">Filtrer par état</label>
+            <select id="etat-select">
+              <option value="Tous">Tous les états</option>
+            </select>
+          </div>
+        </section>
 
-  <div class="controls__field">
-  <label for="etat-select">Filtrer par état</label>
-  <select id="etat-select">
-    <option value="Tous">Tous les états</option>
-  </select>
-</div>
+        <section class="results-header">
+          <div>
+            <h2>Lieux trouvés</h2>
+            <p>
+              Nombre de lieux affichés :
+              <span id="counter">0</span>
+            </p>
+          </div>
+        </section>
 
-  </section>
-  
-<section class="results-header">
-  <div>
-    <h2>Lieux trouvés</h2>
-    <p>
-      Nombre de lieux affichés :
-      <span id="counter">0</span>
-    </p>
-  </div>
-</section>
+        <section id="places-container" aria-label="Liste des lieux">
+          <!-- Les cartes seront ajoutées ici avec JavaScript -->
+        </section>
+      </section>
 
-<section class="map-section">
-  <div class="map-section__header">
-    <h2>Carte des lieux</h2>
-    <p>
-      Les points apparaîtront ici quand les coordonnées seront disponibles.
-    </p>
-  </div>
+      <aside class="map-panel" aria-label="Carte interactive des lieux">
+        <div class="map-section__header">
+          <h2>Carte interactive</h2>
+          <p>Clique sur “Voir sur la carte” pour localiser un lieu.</p>
+        </div>
 
-  <div id="map"></div>
-  
-</section>
-  <section id="places-container">
-  </section>
-  </main>
+        <div id="map"></div>
+      </aside>
+    </main>
+
+    <footer class="site-footer">
+      <div>
+        <strong>DevParis Radar</strong>
+        <p>
+          Projet front-end développé avec JavaScript, Vite, Leaflet et OpenData
+          Paris.
+        </p>
+      </div>
+
+      <div class="site-footer__links">
+        <a
+          href="https://github.com/victormetral/devparis-radar"
+          target="_blank"
+          rel="noreferrer"
+        >
+          GitHub
+        </a>
+
+        <a
+          href="https://opendata.paris.fr"
+          target="_blank"
+          rel="noreferrer"
+        >
+          OpenData Paris
+        </a>
+      </div>
+    </footer>
 
     <script type="module" src="/src/main.js"></script>
   </body>

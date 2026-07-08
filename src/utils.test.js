@@ -1,12 +1,13 @@
 import { describe, expect, it } from "vitest"
+
 import {
-  formaterLieu,
-  filtrerParRecherche,
-  filtrerParCommune,
-  getCommunesUniques,
-  filtrerParEtat,
-  getEtatsUniques,
   filtrerLieuxTech,
+  filtrerParCommune,
+  filtrerParEtat,
+  filtrerParRecherche,
+  formaterLieu,
+  getCommunesUniques,
+  getEtatsUniques,
 } from "./utils.js"
 
 describe("formaterLieu", () => {
@@ -50,9 +51,7 @@ describe("formaterLieu", () => {
   })
 
   it("met des valeurs par défaut si des champs sont absents", () => {
-    const lieuApi = {}
-
-    const resultat = formaterLieu(lieuApi)
+    const resultat = formaterLieu({})
 
     expect(resultat).toEqual({
       id: "lieu-inconnu-adresse-inconnue",
@@ -72,24 +71,24 @@ describe("formaterLieu", () => {
 })
 
 describe("filtrerParRecherche", () => {
-  it("filtre les lieux selon le nom recherché", () => {
-    const lieux = [
-      {
-        nom: "Station F",
-        adresse: "5 Parvis Alan Turing",
-        commune: "Paris",
-        typologie: "Incubateur",
-        typeInnovation: "Innovation tech",
-      },
-      {
-        nom: "La Ruche",
-        adresse: "24 rue de l'Est",
-        commune: "Montreuil",
-        typologie: "Coworking",
-        typeInnovation: "Économie sociale",
-      },
-    ]
+  const lieux = [
+    {
+      nom: "Station F",
+      adresse: "5 Parvis Alan Turing",
+      commune: "Paris",
+      typologie: "Incubateur",
+      typeInnovation: "Innovation tech",
+    },
+    {
+      nom: "La Ruche",
+      adresse: "24 rue de l'Est",
+      commune: "Montreuil",
+      typologie: "Coworking",
+      typeInnovation: "Économie sociale",
+    },
+  ]
 
+  it("filtre les lieux selon le nom recherché", () => {
     const resultat = filtrerParRecherche(lieux, "station")
 
     expect(resultat).toEqual([
@@ -104,23 +103,6 @@ describe("filtrerParRecherche", () => {
   })
 
   it("filtre sans tenir compte des majuscules", () => {
-    const lieux = [
-      {
-        nom: "Station F",
-        adresse: "5 Parvis Alan Turing",
-        commune: "Paris",
-        typologie: "Incubateur",
-        typeInnovation: "Innovation tech",
-      },
-      {
-        nom: "La Ruche",
-        adresse: "24 rue de l'Est",
-        commune: "Montreuil",
-        typologie: "Coworking",
-        typeInnovation: "Économie sociale",
-      },
-    ]
-
     const resultat = filtrerParRecherche(lieux, "STATION")
 
     expect(resultat.length).toBe(1)
@@ -129,24 +111,24 @@ describe("filtrerParRecherche", () => {
 })
 
 describe("filtrerParCommune", () => {
-  it("filtre les lieux selon la commune", () => {
-    const lieux = [
-      {
-        nom: "Station F",
-        adresse: "5 Parvis Alan Turing",
-        commune: "Paris",
-        typologie: "Incubateur",
-        typeInnovation: "Innovation tech",
-      },
-      {
-        nom: "Lieu Tech",
-        adresse: "10 rue test",
-        commune: "Montreuil",
-        typologie: "Coworking",
-        typeInnovation: "Tech",
-      },
-    ]
+  const lieux = [
+    {
+      nom: "Station F",
+      adresse: "5 Parvis Alan Turing",
+      commune: "Paris",
+      typologie: "Incubateur",
+      typeInnovation: "Innovation tech",
+    },
+    {
+      nom: "Lieu Tech",
+      adresse: "10 rue test",
+      commune: "Montreuil",
+      typologie: "Coworking",
+      typeInnovation: "Tech",
+    },
+  ]
 
+  it("filtre les lieux selon la commune", () => {
     const resultat = filtrerParCommune(lieux, "Paris")
 
     expect(resultat).toEqual([
@@ -161,23 +143,6 @@ describe("filtrerParCommune", () => {
   })
 
   it("retourne tous les lieux si la commune vaut Toutes", () => {
-    const lieux = [
-      {
-        nom: "Station F",
-        adresse: "5 Parvis Alan Turing",
-        commune: "Paris",
-        typologie: "Incubateur",
-        typeInnovation: "Innovation tech",
-      },
-      {
-        nom: "Lieu Tech",
-        adresse: "10 rue test",
-        commune: "Montreuil",
-        typologie: "Coworking",
-        typeInnovation: "Tech",
-      },
-    ]
-
     const resultat = filtrerParCommune(lieux, "Toutes")
 
     expect(resultat).toEqual(lieux)
@@ -199,23 +164,18 @@ describe("getCommunesUniques", () => {
 })
 
 describe("filtrerParEtat", () => {
-  it("filtre les lieux selon l'état", () => {
-    const lieux = [
-      { nom: "Lieu A", etat: "existant" },
-      { nom: "Lieu B", etat: "projet" },
-    ]
+  const lieux = [
+    { nom: "Lieu A", etat: "existant" },
+    { nom: "Lieu B", etat: "projet" },
+  ]
 
+  it("filtre les lieux selon l'état", () => {
     const resultat = filtrerParEtat(lieux, "projet")
 
     expect(resultat).toEqual([{ nom: "Lieu B", etat: "projet" }])
   })
 
   it("retourne tous les lieux si l'état vaut Tous", () => {
-    const lieux = [
-      { nom: "Lieu A", etat: "existant" },
-      { nom: "Lieu B", etat: "projet" },
-    ]
-
     const resultat = filtrerParEtat(lieux, "Tous")
 
     expect(resultat).toEqual(lieux)
@@ -237,7 +197,7 @@ describe("getEtatsUniques", () => {
 })
 
 describe("filtrerLieuxTech", () => {
-  it("garde les lieux liés à la tech", () => {
+  it("garde les lieux liés à la tech et exclut les lieux hors sujet", () => {
     const lieux = [
       {
         nom: "Cotlisame",

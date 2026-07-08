@@ -18,6 +18,8 @@ import {
   filtrerLieuxTech,
 } from "./utils.js"
 
+/* Configuration des icônes Leaflet avec Vite */
+
 delete L.Icon.Default.prototype._getIconUrl
 
 L.Icon.Default.mergeOptions({
@@ -26,8 +28,12 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 })
 
+/* Constantes */
+
 const API_URL =
   "https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/arc_innovation/records?limit=100"
+
+/* Sélecteurs DOM */
 
 const placesContainer = document.querySelector("#places-container")
 const counter = document.querySelector("#counter")
@@ -36,10 +42,14 @@ const communeSelect = document.querySelector("#commune-select")
 const etatSelect = document.querySelector("#etat-select")
 const mapElement = document.querySelector("#map")
 
+/* État global */
+
 let tousLesLieux = []
 let map = null
 let markerLayer = null
 let markersByLieu = new Map()
+
+/* Sécurité affichage HTML dans les popups Leaflet */
 
 const escapeHtml = (value) => {
   return String(value)
@@ -50,31 +60,28 @@ const escapeHtml = (value) => {
     .replaceAll("'", "&#039;")
 }
 
-const remplirSelectCommunes = (lieux) => {
-  const communes = getCommunesUniques(lieux)
+/* Remplissage des filtres */
 
-  communes.forEach((commune) => {
+const remplirSelect = (select, valeurs) => {
+  valeurs.forEach((valeur) => {
     const option = document.createElement("option")
 
-    option.value = commune
-    option.textContent = commune
+    option.value = valeur
+    option.textContent = valeur
 
-    communeSelect.appendChild(option)
+    select.appendChild(option)
   })
 }
 
-const remplirSelectEtats = (lieux) => {
+const remplirFiltres = (lieux) => {
+  const communes = getCommunesUniques(lieux)
   const etats = getEtatsUniques(lieux)
 
-  etats.forEach((etat) => {
-    const option = document.createElement("option")
-
-    option.value = etat
-    option.textContent = etat
-
-    etatSelect.appendChild(option)
-  })
+  remplirSelect(communeSelect, communes)
+  remplirSelect(etatSelect, etats)
 }
+
+/* Création des éléments HTML */
 
 const creerParagraphe = (label, valeur) => {
   const paragraph = document.createElement("p")
@@ -101,6 +108,8 @@ const creerLien = (texte, href, classeSupplementaire = "") => {
 
   return link
 }
+
+/* Carte Leaflet */
 
 const initialiserCarte = () => {
   if (!mapElement) {
@@ -151,6 +160,8 @@ const afficherMarqueurs = (lieux) => {
   markerLayer.clearLayers()
   markersByLieu = new Map()
 
+  const bounds = []
+
   lieux.forEach((lieu) => {
     if (!lieu.coordonnees) {
       return
@@ -169,99 +180,119 @@ const afficherMarqueurs = (lieux) => {
       `)
 
     markersByLieu.set(lieu.id, marker)
+    bounds.push([latitude, longitude])
   })
+
+  if (bounds.length > 0) {
+    map.fitBounds(bounds, {
+      padding: [32, 32],
+      maxZoom: 13,
+    })
+  }
+}
+
+/* Affichage des cartes */
+
+const creerCarteLieu = (lieu) => {
+  const card = document.createElement("article")
+  card.classList.add("place-card")
+  card.dataset.lieuId = lieu.id
+
+  const title = document.createElement("h3")
+  title.textContent = lieu.nom
+
+  const status = document.createElement("p")
+  status.classList.add("place-card__status")
+  status.textContent = lieu.etat
+
+  const adresse = creerParagraphe("Adresse", lieu.adresse)
+  const commune = creerParagraphe("Commune", lieu.commune)
+  const typologie = creerParagraphe("Typologie", lieu.typologie)
+  const innovation = creerParagraphe("Innovation", lieu.typeInnovation)
+
+  const description = document.createElement("p")
+  description.classList.add("place-card__description")
+  description.textContent = lieu.description
+
+  card.append(
+    title,
+    status,
+    adresse,
+    commune,
+    typologie,
+    innovation,
+    description
+  )
+
+  if (lieu.siteInternet) {
+    const siteLink = creerLien("Voir le site", lieu.siteInternet)
+
+    siteLink.target = "_blank"
+    siteLink.rel = "noreferrer"
+
+    card.appendChild(siteLink)
+  }
+
+  if (lieu.email) {
+    const emailLink = creerLien(
+      "Email",
+      `mailto:${lieu.email}`,
+      "place-card__link--secondary"
+    )
+
+    card.appendChild(emailLink)
+  }
+
+  if (lieu.telephone) {
+    const telephoneLink = creerLien(
+      "Téléphone",
+      `tel:${lieu.telephone}`,
+      "place-card__link--secondary"
+    )
+
+    card.appendChild(telephoneLink)
+  }
+
+  if (lieu.coordonnees) {
+    const mapButton = document.createElement("button")
+
+    mapButton.type = "button"
+    mapButton.classList.add("place-card__link")
+    mapButton.textContent = "Voir sur la carte"
+
+    mapButton.addEventListener("click", () => {
+      centrerCarteSurLieu(lieu)
+    })
+
+    card.appendChild(mapButton)
+  }
+
+  return card
 }
 
 const afficherLieux = (lieux) => {
   placesContainer.innerHTML = ""
 
   if (lieux.length === 0) {
-    placesContainer.innerHTML =
-      '<p class="empty-message">Aucun lieu ne correspond à votre recherche.</p>'
+    const emptyMessage = document.createElement("p")
+    emptyMessage.classList.add("empty-message")
+    emptyMessage.textContent = "Aucun lieu ne correspond à votre recherche."
 
+    placesContainer.appendChild(emptyMessage)
     counter.textContent = 0
+
     return
   }
 
   lieux.forEach((lieu) => {
-    const card = document.createElement("article")
-    card.classList.add("place-card")
-    card.dataset.lieuId = lieu.id
-
-    const title = document.createElement("h3")
-    title.textContent = lieu.nom
-
-    const status = document.createElement("p")
-    status.classList.add("place-card__status")
-    status.textContent = lieu.etat
-
-    const adresse = creerParagraphe("Adresse", lieu.adresse)
-    const commune = creerParagraphe("Commune", lieu.commune)
-    const typologie = creerParagraphe("Typologie", lieu.typologie)
-    const innovation = creerParagraphe("Innovation", lieu.typeInnovation)
-
-    const description = document.createElement("p")
-    description.classList.add("place-card__description")
-    description.textContent = lieu.description
-
-    card.append(
-      title,
-      status,
-      adresse,
-      commune,
-      typologie,
-      innovation,
-      description
-    )
-
-    if (lieu.siteInternet) {
-      const siteLink = creerLien("Voir le site", lieu.siteInternet)
-
-      siteLink.target = "_blank"
-      siteLink.rel = "noreferrer"
-
-      card.appendChild(siteLink)
-    }
-
-    if (lieu.email) {
-      const emailLink = creerLien(
-        "Email",
-        `mailto:${lieu.email}`,
-        "place-card__link--secondary"
-      )
-
-      card.appendChild(emailLink)
-    }
-
-    if (lieu.telephone) {
-      const telephoneLink = creerLien(
-        "Téléphone",
-        `tel:${lieu.telephone}`,
-        "place-card__link--secondary"
-      )
-
-      card.appendChild(telephoneLink)
-    }
-
-    if (lieu.coordonnees) {
-      const mapButton = document.createElement("button")
-
-      mapButton.type = "button"
-      mapButton.classList.add("place-card__link")
-      mapButton.textContent = "Voir sur la carte"
-
-      mapButton.addEventListener("click", () => {
-        centrerCarteSurLieu(lieu)
-      })
-
-      card.appendChild(mapButton)
-    }
-
+    const card = creerCarteLieu(lieu)
     placesContainer.appendChild(card)
   })
 
   counter.textContent = lieux.length
 }
+
+/* Filtres */
 
 const appliquerFiltres = () => {
   const recherche = searchInput.value
@@ -276,23 +307,36 @@ const appliquerFiltres = () => {
   afficherMarqueurs(lieuxFiltres)
 }
 
+/* Chargement API */
+
 const chargerLieux = async () => {
-  const response = await fetch(API_URL)
-  const data = await response.json()
+  try {
+    const response = await fetch(API_URL)
+    const data = await response.json()
 
-  const lieuxFormates = data.results.map((lieu) => formaterLieu(lieu))
+    const lieuxFormates = data.results.map((lieu) => formaterLieu(lieu))
 
-  tousLesLieux = filtrerLieuxTech(lieuxFormates)
+    tousLesLieux = filtrerLieuxTech(lieuxFormates)
 
-  remplirSelectCommunes(tousLesLieux)
-  remplirSelectEtats(tousLesLieux)
-  afficherLieux(tousLesLieux)
-  afficherMarqueurs(tousLesLieux)
+    remplirFiltres(tousLesLieux)
+    afficherLieux(tousLesLieux)
+    afficherMarqueurs(tousLesLieux)
+  } catch (error) {
+    placesContainer.innerHTML =
+      '<p class="empty-message">Impossible de charger les lieux pour le moment.</p>'
+
+    counter.textContent = 0
+    console.error(error)
+  }
 }
+
+/* Événements */
 
 searchInput.addEventListener("input", appliquerFiltres)
 communeSelect.addEventListener("change", appliquerFiltres)
 etatSelect.addEventListener("change", appliquerFiltres)
+
+/* Initialisation */
 
 initialiserCarte()
 chargerLieux()
