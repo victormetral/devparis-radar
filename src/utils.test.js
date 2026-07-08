@@ -18,7 +18,9 @@ describe("formaterLieu", () => {
       type_innovation: "Innovation tech",
       etat: "existant",
       texte_descriptif: "Grand lieu d’innovation à Paris",
-site_internet: "https://example.com",
+      site_internet: "https://example.com",
+      contact_mail: "contact@example.com",
+      contact_telephonique: "0102030405",
     }
 
     const resultat = formaterLieu(lieuApi)
@@ -31,7 +33,9 @@ site_internet: "https://example.com",
       typeInnovation: "Innovation tech",
       etat: "existant",
       description: "Grand lieu d’innovation à Paris",
-siteInternet: "https://example.com",
+      siteInternet: "https://example.com",
+      email: "contact@example.com",
+      telephone: "0102030405",
     })
   })
 
@@ -48,7 +52,9 @@ siteInternet: "https://example.com",
       typeInnovation: "Type d'innovation inconnu",
       etat: "État inconnu",
       description: "Description non disponible",
-siteInternet: "",
+      siteInternet: "",
+      email: "",
+      telephone: "",
     })
   })
 })

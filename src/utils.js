@@ -8,6 +8,8 @@ export const formaterLieu = (lieu) => {
     typeInnovation: lieu.type_innovation || "Type d'innovation inconnu",
     description: lieu.texte_descriptif || "Description non disponible",
     siteInternet: lieu.site_internet || "",
+    email: lieu.contact_mail || "",
+telephone: lieu.contact_telephonique || "",
   }
 }
 

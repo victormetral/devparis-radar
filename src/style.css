@@ -154,8 +154,12 @@ body {
 }
 
 .place-card__description {
+  display: -webkit-box;
+  overflow: hidden;
   color: var(--color-muted);
   line-height: 1.5;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
 }
 
 .place-card__link {
@@ -168,6 +172,13 @@ body {
   color: white;
   font-weight: bold;
   text-decoration: none;
+}
+
+.place-card__link--secondary {
+  margin-left: var(--space-sm);
+  background-color: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
 }
 
 .place-card__link:hover {
