@@ -21,6 +21,10 @@ describe("formaterLieu", () => {
       site_internet: "https://example.com",
       contact_mail: "contact@example.com",
       contact_telephonique: "0102030405",
+      xy: {
+  lat: 48.8566,
+  lon: 2.3522,
+},
     }
 
     const resultat = formaterLieu(lieuApi)
@@ -36,6 +40,10 @@ describe("formaterLieu", () => {
       siteInternet: "https://example.com",
       email: "contact@example.com",
       telephone: "0102030405",
+      coordonnees: {
+  latitude: 48.8566,
+  longitude: 2.3522,
+},
     })
   })
 
@@ -55,6 +63,7 @@ describe("formaterLieu", () => {
       siteInternet: "",
       email: "",
       telephone: "",
+      coordonnees: null,
     })
   })
 })

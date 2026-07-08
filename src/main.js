@@ -1,4 +1,8 @@
-import './style.css'
+import L from "leaflet"
+import "leaflet/dist/leaflet.css"
+
+import "./reset.css"
+import "./style.css"
 
 import {
   formaterLieu,
@@ -7,7 +11,7 @@ import {
   filtrerParEtat,
   getCommunesUniques,
   getEtatsUniques,
-} from './utils.js'
+} from "./utils.js"
 
 const API_URL =
   'https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/arc_innovation/records?limit=20'
@@ -17,7 +21,11 @@ const counter = document.querySelector('#counter')
 const searchInput = document.querySelector('#search-input')
 const communeSelect = document.querySelector('#commune-select')
 const etatSelect = document.querySelector('#etat-select')
+const mapElement = document.querySelector("#map")
+
 let tousLesLieux = []
+let map = null
+let markerLayer = null
 
 const remplirSelectCommunes = (lieux) => {
   const communes = getCommunesUniques(lieux)
@@ -156,6 +164,45 @@ const appliquerFiltres = () => {
   lieuxFiltres = filtrerParEtat(lieuxFiltres, etat)
 
   afficherLieux(lieuxFiltres)
+  afficherMarqueurs(lieuxFiltres)
+}
+
+const initialiserCarte = () => {
+  if (!mapElement) {
+    return
+  }
+
+  map = L.map(mapElement).setView([48.8566, 2.3522], 12)
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap contributors",
+  }).addTo(map)
+
+  markerLayer = L.layerGroup().addTo(map)
+}
+
+const afficherMarqueurs = (lieux) => {
+  if (!map || !markerLayer) {
+    return
+  }
+
+  markerLayer.clearLayers()
+
+  lieux.forEach((lieu) => {
+    if (!lieu.coordonnees) {
+      return
+    }
+
+    const { latitude, longitude } = lieu.coordonnees
+
+    L.marker([latitude, longitude])
+      .addTo(markerLayer)
+      .bindPopup(`
+        <strong>${lieu.nom}</strong><br>
+        ${lieu.commune}<br>
+        ${lieu.etat}
+      `)
+  })
 }
 
 const chargerLieux = async () => {
@@ -167,10 +214,12 @@ const chargerLieux = async () => {
 remplirSelectCommunes(tousLesLieux)
 remplirSelectEtats(tousLesLieux)
 afficherLieux(tousLesLieux)
+afficherMarqueurs(tousLesLieux)
 }
 
 searchInput.addEventListener('input', appliquerFiltres)
 communeSelect.addEventListener('change', appliquerFiltres)
 etatSelect.addEventListener('change', appliquerFiltres)
 
+initialiserCarte()
 chargerLieux()

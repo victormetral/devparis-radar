@@ -1,4 +1,7 @@
 export const formaterLieu = (lieu) => {
+  const latitude = lieu.xy?.lat
+  const longitude = lieu.xy?.lon
+
   return {
     nom: lieu.nom || "Nom inconnu",
     adresse: lieu.adresse || "Adresse inconnue",
@@ -9,7 +12,11 @@ export const formaterLieu = (lieu) => {
     description: lieu.texte_descriptif || "Description non disponible",
     siteInternet: lieu.site_internet || "",
     email: lieu.contact_mail || "",
-telephone: lieu.contact_telephonique || "",
+    telephone: lieu.contact_telephonique || "",
+    coordonnees:
+      typeof latitude === "number" && typeof longitude === "number"
+        ? { latitude, longitude }
+        : null,
   }
 }
 
