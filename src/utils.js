@@ -3,6 +3,7 @@ export const formaterLieu = (lieu) => {
   const longitude = lieu.xy?.lon
 
   return {
+    id: `${lieu.nom || "lieu-inconnu"}-${lieu.adresse || "adresse-inconnue"}`,
     nom: lieu.nom || "Nom inconnu",
     adresse: lieu.adresse || "Adresse inconnue",
     commune: lieu.commune || "Commune inconnue",
@@ -60,4 +61,78 @@ export const getEtatsUniques = (lieux) => {
   const etats = lieux.map((lieu) => lieu.etat)
 
   return [...new Set(etats)].sort()
+}
+
+const motsClesTech = [
+  "tech",
+  "numérique",
+  "digital",
+  "startup",
+  "start-up",
+  "fablab",
+  "incubateur",
+  "coworking",
+  "industrie",
+  "industries",
+  "maker",
+  "makers",
+  "fabrication",
+  "atelier",
+  "prototype",
+  "prototypage",
+  "data",
+  "robotique",
+  "logiciel",
+  "open source",
+  "innovation technologique",
+]
+
+const motsClesHorsSujet = [
+  "agriculture",
+  "agricole",
+  "jardin",
+  "jardinage",
+  "potager",
+  "végétal",
+  "culture",
+  "théâtre",
+  "crèche",
+  "résidence",
+  "hôtel",
+  "hôtellerie",
+  "habiter",
+  "logement",
+  "supermarché",
+  "alimentaire",
+  "coopérative alimentaire",
+]
+
+const creerTexteRecherche = (lieu) => {
+  return [
+    lieu.nom,
+    lieu.adresse,
+    lieu.commune,
+    lieu.etat,
+    lieu.typologie,
+    lieu.typeInnovation,
+    lieu.description,
+    lieu.siteInternet,
+  ]
+    .join(" ")
+    .toLowerCase()
+}
+
+const contientMotCle = (texte, motsCles) => {
+  return motsCles.some((motCle) => texte.includes(motCle))
+}
+
+export const filtrerLieuxTech = (lieux) => {
+  return lieux.filter((lieu) => {
+    const texte = creerTexteRecherche(lieu)
+
+    const estTech = contientMotCle(texte, motsClesTech)
+    const estHorsSujet = contientMotCle(texte, motsClesHorsSujet)
+
+    return estTech && !estHorsSujet
+  })
 }

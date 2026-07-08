@@ -5,7 +5,8 @@ import {
   filtrerParCommune,
   getCommunesUniques,
   filtrerParEtat,
-getEtatsUniques,
+  getEtatsUniques,
+  filtrerLieuxTech,
 } from "./utils.js"
 
 describe("formaterLieu", () => {
@@ -22,14 +23,15 @@ describe("formaterLieu", () => {
       contact_mail: "contact@example.com",
       contact_telephonique: "0102030405",
       xy: {
-  lat: 48.8566,
-  lon: 2.3522,
-},
+        lat: 48.8566,
+        lon: 2.3522,
+      },
     }
 
     const resultat = formaterLieu(lieuApi)
 
     expect(resultat).toEqual({
+      id: "Station F-5 Parvis Alan Turing",
       nom: "Station F",
       adresse: "5 Parvis Alan Turing",
       commune: "Paris",
@@ -41,9 +43,9 @@ describe("formaterLieu", () => {
       email: "contact@example.com",
       telephone: "0102030405",
       coordonnees: {
-  latitude: 48.8566,
-  longitude: 2.3522,
-},
+        latitude: 48.8566,
+        longitude: 2.3522,
+      },
     })
   })
 
@@ -53,6 +55,7 @@ describe("formaterLieu", () => {
     const resultat = formaterLieu(lieuApi)
 
     expect(resultat).toEqual({
+      id: "lieu-inconnu-adresse-inconnue",
       nom: "Nom inconnu",
       adresse: "Adresse inconnue",
       commune: "Commune inconnue",
@@ -230,5 +233,35 @@ describe("getEtatsUniques", () => {
     const resultat = getEtatsUniques(lieux)
 
     expect(resultat).toEqual(["existant", "projet"])
+  })
+})
+
+describe("filtrerLieuxTech", () => {
+  it("garde les lieux liés à la tech", () => {
+    const lieux = [
+      {
+        nom: "Cotlisame",
+        typologie: "Nouvelles économies et industries",
+        typeInnovation: "Fablab",
+        description: "",
+      },
+      {
+        nom: "École de Bercy",
+        typologie: "Nouveaux lieux - nouveaux services",
+        typeInnovation: "Agriculture urbaine",
+        description: "Toit terrasse végétalisé",
+      },
+    ]
+
+    const resultat = filtrerLieuxTech(lieux)
+
+    expect(resultat).toEqual([
+      {
+        nom: "Cotlisame",
+        typologie: "Nouvelles économies et industries",
+        typeInnovation: "Fablab",
+        description: "",
+      },
+    ])
   })
 })
