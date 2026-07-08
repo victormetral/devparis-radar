@@ -132,12 +132,22 @@ const centrerCarteSurLieu = (lieu) => {
 
   const { latitude, longitude } = lieu.coordonnees
   const marker = markersByLieu.get(lieu.id)
+  const mapPanel = document.querySelector(".map-panel")
 
-  map.setView([latitude, longitude], 15)
-
-  if (marker) {
-    marker.openPopup()
+  if (mapPanel) {
+    mapPanel.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    })
   }
+
+  setTimeout(() => {
+    map.setView([latitude, longitude], 15)
+
+    if (marker) {
+      marker.openPopup()
+    }
+  }, 400)
 
   document.querySelectorAll(".place-card").forEach((card) => {
     card.classList.remove("is-active")

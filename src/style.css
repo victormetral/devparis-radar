@@ -24,23 +24,27 @@
   --container-max-width: 1440px;
 }
 
-/* Base générale */
+/* Base */
 
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   background:
-    radial-gradient(circle at top left, rgba(43, 92, 255, 0.12), transparent 420px),
+    radial-gradient(
+      circle at top left,
+      rgba(43, 92, 255, 0.12),
+      transparent 420px
+    ),
     var(--color-bg);
   color: var(--color-text);
 }
 
-/* Header / Hero */
+/* Header */
 
 .site-header {
   max-width: var(--container-max-width);
   margin: 0 auto;
-  padding: var(--space-xl) var(--space-xl) var(--space-lg);
+  padding: var(--space-xl);
 }
 
 .hero {
@@ -52,7 +56,11 @@ body {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(245, 247, 255, 0.92)),
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.96),
+      rgba(245, 247, 255, 0.92)
+    ),
     linear-gradient(135deg, rgba(43, 92, 255, 0.16), transparent);
   box-shadow: var(--shadow-card);
   overflow: hidden;
@@ -62,7 +70,7 @@ body {
   min-width: 0;
 }
 
-.site-header__tagline {
+.hero__tagline {
   margin: 0 0 var(--space-sm);
   color: var(--color-primary);
   font-size: 14px;
@@ -71,14 +79,14 @@ body {
   letter-spacing: 1px;
 }
 
-.site-header h1 {
+.hero h1 {
   margin: 0 0 var(--space-md);
   font-size: clamp(42px, 6vw, 72px);
   line-height: 0.95;
   letter-spacing: -2px;
 }
 
-.site-header__description {
+.hero__description {
   max-width: 720px;
   margin: 0;
   color: var(--color-muted);
@@ -129,7 +137,7 @@ body {
   bottom: 0;
 }
 
-/* Layout principal */
+/* Layout */
 
 .app-layout {
   display: grid;
@@ -137,14 +145,14 @@ body {
   gap: var(--space-xl);
   max-width: var(--container-max-width);
   margin: 0 auto;
-  padding: var(--space-lg) var(--space-xl) var(--space-2xl);
+  padding: 0 var(--space-xl) var(--space-2xl);
 }
 
 .app-content {
   min-width: 0;
 }
 
-/* Zone de filtres */
+/* Filtres */
 
 .controls {
   display: grid;
@@ -190,7 +198,7 @@ body {
   box-shadow: 0 0 0 3px rgba(43, 92, 255, 0.15);
 }
 
-/* Bloc résultats */
+/* Résultats */
 
 .results-header {
   margin-top: var(--space-xl);
@@ -225,17 +233,17 @@ body {
   box-shadow: var(--shadow-card);
 }
 
-.map-section__header {
+.map-panel__header {
   padding: var(--space-lg);
   border-bottom: 1px solid var(--color-border);
 }
 
-.map-section__header h2 {
+.map-panel__header h2 {
   margin: 0;
   font-size: 24px;
 }
 
-.map-section__header p {
+.map-panel__header p {
   margin: var(--space-sm) 0 0;
   color: var(--color-muted);
   line-height: 1.5;
@@ -247,7 +255,7 @@ body {
   background-color: var(--color-map-bg);
 }
 
-/* Grille des lieux */
+/* Grille */
 
 #places-container {
   display: grid;
@@ -418,7 +426,7 @@ body {
   }
 
   .app-layout {
-    padding: var(--space-lg);
+    padding: 0 var(--space-lg) var(--space-xl);
   }
 
   .controls {
