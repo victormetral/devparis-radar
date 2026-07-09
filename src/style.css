@@ -423,6 +423,49 @@ body {
 /* Message affiché quand aucun résultat n'est trouvé. */
 
 /* ===========================
+   Pagination
+   =========================== */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
+}
+/* Centre les boutons de pagination sous les cartes. */
+
+.pagination button {
+  height: 42px;
+  padding: 0 var(--space-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-weight: bold;
+  cursor: pointer;
+}
+/* Donne un style propre aux boutons Précédent et Suivant. */
+
+.pagination button:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+/* Change la couleur du bouton au survol, sauf s'il est désactivé. */
+
+.pagination button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+/* Rend visuellement clair qu'un bouton désactivé n'est pas cliquable. */
+
+#pagination-info {
+  color: var(--color-muted);
+  font-weight: bold;
+}
+/* Style du texte Page 1 / X. */
+
+/* ===========================
    Footer
    =========================== */
 

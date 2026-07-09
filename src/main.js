@@ -31,10 +31,10 @@ L.Icon.Default.mergeOptions({
 
 /* Constantes */
 
-const API_URL =
-  "https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/arc_innovation/records?limit=100"
+const API_BASE_URL =
+  "https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/arc_innovation/records"
 
-/* Sélecteurs DOM */
+  /* Sélecteurs DOM */
 
 const placesContainer = document.querySelector("#places-container")
 const counter = document.querySelector("#counter")
@@ -43,6 +43,10 @@ const communeSelect = document.querySelector("#commune-select")
 const etatSelect = document.querySelector("#etat-select")
 const mapElement = document.querySelector("#map")
 const mapPanel = document.querySelector(".map-panel")
+const previousPageButton = document.querySelector("#previous-page")
+const nextPageButton = document.querySelector("#next-page")
+const paginationInfo = document.querySelector("#pagination-info")
+const pagination = document.querySelector(".pagination")
 
 
 /* État global */
@@ -51,6 +55,9 @@ let tousLesLieux = []
 let map = null
 let markerLayer = null
 let markersByLieu = new Map()
+let lieuxFiltresCourants = []
+let pageActuelle = 1
+const lieuxParPage = 12
 
 /* Fonctions utilitaires */
 /* Sécurité affichage HTML dans les popups Leaflet */
@@ -283,6 +290,33 @@ const creerCarteLieu = (lieu) => {
   return card
 }
 
+const paginerLieux = (lieux) => {
+  const debut = (pageActuelle - 1) * lieuxParPage
+  const fin = debut + lieuxParPage
+
+  return lieux.slice(debut, fin)
+}
+
+const mettreAJourPagination = () => {
+  const nombrePages = Math.ceil(lieuxFiltresCourants.length / lieuxParPage)
+
+  paginationInfo.textContent = `Page ${pageActuelle} / ${nombrePages || 1}`
+
+  previousPageButton.disabled = pageActuelle === 1
+  nextPageButton.disabled = pageActuelle >= nombrePages
+}
+
+const scrollVersPagination = () => {
+  if (!pagination) {
+    return
+  }
+
+  pagination.scrollIntoView({
+    behavior: "smooth",
+    block: "center",
+  })
+}
+
 const afficherLieux = (lieux) => {
   placesContainer.innerHTML = ""
 
@@ -302,7 +336,7 @@ const afficherLieux = (lieux) => {
     placesContainer.appendChild(card)
   })
 
-  counter.textContent = lieux.length
+  counter.textContent = lieuxFiltresCourants.length
 }
 
 /* Filtres */
@@ -316,24 +350,53 @@ const appliquerFiltres = () => {
   lieuxFiltres = filtrerParCommune(lieuxFiltres, commune)
   lieuxFiltres = filtrerParEtat(lieuxFiltres, etat)
 
-  afficherLieux(lieuxFiltres)
-  afficherMarqueurs(lieuxFiltres)
+  lieuxFiltresCourants = lieuxFiltres
+  pageActuelle = 1
+
+  const lieuxPaginees = paginerLieux(lieuxFiltresCourants)
+
+  afficherLieux(lieuxPaginees)
+  afficherMarqueurs(lieuxFiltresCourants)
+  mettreAJourPagination()
 }
 
 /* Chargement API */
 
-const chargerLieux = async () => {
-  try {
-    const response = await fetch(API_URL)
+const chargerTousLesResultats = async () => {
+  const limit = 100
+  let offset = 0
+  let total = Infinity
+  let resultats = []
+
+  while (offset < total) {
+    const response = await fetch(
+      `${API_BASE_URL}?limit=${limit}&offset=${offset}`
+    )
+
     const data = await response.json()
 
-    const lieuxFormates = data.results.map((lieu) => formaterLieu(lieu))
+    resultats = [...resultats, ...data.results]
+    total = data.total_count
+    offset += limit
+  }
+
+  return resultats
+}
+
+const chargerLieux = async () => {
+  try {
+    const resultatsApi = await chargerTousLesResultats()
+
+    const lieuxFormates = resultatsApi.map((lieu) => formaterLieu(lieu))
 
     tousLesLieux = filtrerLieuxTech(lieuxFormates)
 
     remplirFiltres(tousLesLieux)
-    afficherLieux(tousLesLieux)
-    afficherMarqueurs(tousLesLieux)
+    lieuxFiltresCourants = tousLesLieux
+
+    afficherLieux(paginerLieux(lieuxFiltresCourants))
+    afficherMarqueurs(lieuxFiltresCourants)
+    mettreAJourPagination()
   } catch (error) {
     placesContainer.innerHTML =
       '<p class="empty-message">Impossible de charger les lieux pour le moment.</p>'
@@ -348,6 +411,28 @@ const chargerLieux = async () => {
 searchInput.addEventListener("input", appliquerFiltres)
 communeSelect.addEventListener("change", appliquerFiltres)
 etatSelect.addEventListener("change", appliquerFiltres)
+
+previousPageButton.addEventListener("click", () => {
+  if (pageActuelle > 1) {
+    pageActuelle -= 1
+
+    afficherLieux(paginerLieux(lieuxFiltresCourants))
+    mettreAJourPagination()
+    scrollVersPagination()
+  }
+})
+
+nextPageButton.addEventListener("click", () => {
+  const nombrePages = Math.ceil(lieuxFiltresCourants.length / lieuxParPage)
+
+  if (pageActuelle < nombrePages) {
+    pageActuelle += 1
+
+    afficherLieux(paginerLieux(lieuxFiltresCourants))
+    mettreAJourPagination()
+    scrollVersPagination()
+  }
+})
 
 /* Initialisation */
 
