@@ -1,3 +1,4 @@
+//Imports 
 import L from "leaflet"
 import "leaflet/dist/leaflet.css"
 
@@ -41,6 +42,8 @@ const searchInput = document.querySelector("#search-input")
 const communeSelect = document.querySelector("#commune-select")
 const etatSelect = document.querySelector("#etat-select")
 const mapElement = document.querySelector("#map")
+const mapPanel = document.querySelector(".map-panel")
+
 
 /* État global */
 
@@ -49,6 +52,7 @@ let map = null
 let markerLayer = null
 let markersByLieu = new Map()
 
+/* Fonctions utilitaires */
 /* Sécurité affichage HTML dans les popups Leaflet */
 
 const escapeHtml = (value) => {
@@ -132,7 +136,6 @@ const centrerCarteSurLieu = (lieu) => {
 
   const { latitude, longitude } = lieu.coordonnees
   const marker = markersByLieu.get(lieu.id)
-  const mapPanel = document.querySelector(".map-panel")
 
   if (mapPanel) {
     mapPanel.scrollIntoView({

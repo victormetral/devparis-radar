@@ -1,9 +1,16 @@
+/* ===========================
+   Formatage des données API
+   =========================== */
+
 export const formaterLieu = (lieu) => {
   const latitude = lieu.xy?.lat
   const longitude = lieu.xy?.lon
+  /* Récupère les coordonnées si elles existent, sans faire planter le code. */
 
   return {
     id: `${lieu.nom || "lieu-inconnu"}-${lieu.adresse || "adresse-inconnue"}`,
+    /* Crée un identifiant unique avec le nom et l'adresse du lieu. */
+
     nom: lieu.nom || "Nom inconnu",
     adresse: lieu.adresse || "Adresse inconnue",
     commune: lieu.commune || "Commune inconnue",
@@ -14,23 +21,33 @@ export const formaterLieu = (lieu) => {
     siteInternet: lieu.site_internet || "",
     email: lieu.contact_mail || "",
     telephone: lieu.contact_telephonique || "",
+    /* Ajoute des valeurs par défaut si l'API ne fournit pas certaines données. */
+
     coordonnees:
       typeof latitude === "number" && typeof longitude === "number"
         ? { latitude, longitude }
         : null,
+    /* Garde les coordonnées uniquement si latitude et longitude sont des nombres. */
   }
 }
+
+/* ===========================
+   Recherche texte
+   =========================== */
 
 const texteContient = (valeur, recherche) => {
   return String(valeur).toLowerCase().includes(recherche)
 }
+/* Convertit une valeur en texte puis vérifie si elle contient la recherche. */
 
 export const filtrerParRecherche = (lieux, recherche) => {
   const rechercheMinuscule = recherche.trim().toLowerCase()
+  /* Nettoie la recherche et ignore les majuscules. */
 
   if (rechercheMinuscule === "") {
     return lieux
   }
+  /* Si la recherche est vide, on garde tous les lieux. */
 
   return lieux.filter((lieu) => {
     return (
@@ -43,35 +60,56 @@ export const filtrerParRecherche = (lieux, recherche) => {
       texteContient(lieu.description, rechercheMinuscule)
     )
   })
+  /* Cherche le texte dans plusieurs champs du lieu. */
 }
+
+/* ===========================
+   Filtres utilisateur
+   =========================== */
 
 export const filtrerParCommune = (lieux, commune) => {
   if (commune === "Toutes") {
     return lieux
   }
+  /* Si "Toutes" est sélectionné, aucun filtre commune n'est appliqué. */
 
   return lieux.filter((lieu) => lieu.commune === commune)
 }
+/* Garde uniquement les lieux de la commune sélectionnée. */
 
 export const filtrerParEtat = (lieux, etat) => {
   if (etat === "Tous") {
     return lieux
   }
+  /* Si "Tous" est sélectionné, aucun filtre état n'est appliqué. */
 
   return lieux.filter((lieu) => lieu.etat === etat)
 }
+/* Garde uniquement les lieux avec l'état sélectionné. */
+
+/* ===========================
+   Listes uniques pour les selects
+   =========================== */
 
 export const getCommunesUniques = (lieux) => {
   const communes = lieux.map((lieu) => lieu.commune)
+  /* Transforme la liste des lieux en liste de communes. */
 
   return [...new Set(communes)].sort()
+  /* Set supprime les doublons, sort() trie de A à Z. */
 }
 
 export const getEtatsUniques = (lieux) => {
   const etats = lieux.map((lieu) => lieu.etat)
+  /* Transforme la liste des lieux en liste d'états. */
 
   return [...new Set(etats)].sort()
+  /* Set supprime les doublons, sort() trie de A à Z. */
 }
+
+/* ===========================
+   Mots-clés pour garder les lieux tech
+   =========================== */
 
 const motsClesTech = [
   "tech",
@@ -96,6 +134,7 @@ const motsClesTech = [
   "open source",
   "innovation technologique",
 ]
+/* Mots-clés qui indiquent qu'un lieu peut être intéressant pour la tech. */
 
 const motsClesHorsSujet = [
   "agriculture",
@@ -116,6 +155,11 @@ const motsClesHorsSujet = [
   "alimentaire",
   "coopérative alimentaire",
 ]
+/* Mots-clés qui indiquent qu'un lieu est probablement hors sujet. */
+
+/* ===========================
+   Préparation du texte à analyser
+   =========================== */
 
 const creerTexteRecherche = (lieu) => {
   return [
@@ -131,18 +175,27 @@ const creerTexteRecherche = (lieu) => {
     .join(" ")
     .toLowerCase()
 }
+/* Regroupe plusieurs champs d'un lieu dans un seul texte en minuscules. */
 
 const contientMotCle = (texte, motsCles) => {
   return motsCles.some((motCle) => texte.includes(motCle))
 }
+/* Vérifie si au moins un mot-clé est présent dans le texte. */
+
+/* ===========================
+   Filtre final des lieux tech
+   =========================== */
 
 export const filtrerLieuxTech = (lieux) => {
   return lieux.filter((lieu) => {
     const texte = creerTexteRecherche(lieu)
+    /* Prépare un texte complet pour analyser le lieu. */
 
     const estTech = contientMotCle(texte, motsClesTech)
     const estHorsSujet = contientMotCle(texte, motsClesHorsSujet)
+    /* Vérifie si le lieu est tech et s'il contient un mot hors sujet. */
 
     return estTech && !estHorsSujet
+    /* Garde le lieu seulement s'il est tech et pas hors sujet. */
   })
 }

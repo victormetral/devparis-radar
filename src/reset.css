@@ -3,19 +3,23 @@
 *::after {
   box-sizing: border-box;
 }
-/* Force tous les éléments à garder leur largeur totale même avec padding et bordure. */
+/* La largeur inclut le padding et la bordure. */
+
 body {
   margin: 0;
 }
+/* Supprime la marge par défaut du navigateur. */
 
 img,
 video {
   max-width: 100%;
   display: block;
 }
+/* Les médias restent dans leur conteneur et suppriment l'espace en dessous. */
 
 input,
 select,
 button {
   font: inherit;
 }
+/* Les formulaires utilisent la même police que le reste du site. */

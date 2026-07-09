@@ -1,37 +1,66 @@
 <!doctype html>
+<!-- Indique au navigateur qu'on utilise HTML5. -->
+
 <html lang="fr">
+  <!-- Définit la langue principale de la page en français. -->
+
   <head>
     <meta charset="UTF-8" />
+    <!-- Permet d'afficher correctement les accents et caractères spéciaux. -->
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Rend la page responsive sur mobile et tablette. -->
+
     <title>DevParis Radar</title>
+    <!-- Titre affiché dans l'onglet du navigateur. -->
   </head>
 
   <body>
     <header class="site-header">
+      <!-- En-tête principal de l'application. -->
+
       <section class="hero">
+        <!-- Section d'introduction visuelle du projet. -->
+
         <div class="hero__content">
+          <!-- Bloc contenant le texte principal du hero. -->
+
           <p class="hero__tagline">OpenData Paris · Tech · Innovation</p>
+          <!-- Petite phrase d'accroche au-dessus du titre. -->
 
           <h1>DevParis Radar</h1>
+          <!-- Titre principal de l'application. -->
 
           <p class="hero__description">
             Explore les lieux tech, fablabs, espaces d’innovation, coworking et
             projets numériques autour de Paris.
           </p>
+          <!-- Description courte du projet. -->
         </div>
 
         <div class="hero__visual" aria-hidden="true">
+          <!-- Bloc décoratif ignoré par les lecteurs d'écran. -->
+
           <div class="hero__card hero__card--primary">
+            <!-- Carte décorative indiquant la source de données. -->
+
             <span>API</span>
+            <!-- Petit label de la carte. -->
+
             <strong>OpenData Paris</strong>
+            <!-- Texte important de la carte. -->
           </div>
 
           <div class="hero__card hero__card--secondary">
+            <!-- Carte décorative indiquant la librairie de carte. -->
+
             <span>Carte</span>
             <strong>Leaflet</strong>
           </div>
 
           <div class="hero__card hero__card--tertiary">
+            <!-- Carte décorative indiquant le type de projet. -->
+
             <span>Projet</span>
             <strong>Portfolio JS</strong>
           </div>
@@ -40,67 +69,107 @@
     </header>
 
     <main class="app-layout">
+      <!-- Contenu principal : résultats à gauche et carte à droite. -->
+
       <section class="app-content">
+        <!-- Zone principale contenant les filtres et les cartes de lieux. -->
+
         <section class="controls" aria-label="Filtres de recherche">
+          <!-- Zone des filtres de recherche. -->
+
           <div class="controls__field">
+            <!-- Champ de recherche texte. -->
+
             <label for="search-input">Rechercher un lieu</label>
+            <!-- Label lié à l'input grâce à l'attribut for. -->
+
             <input
               id="search-input"
               type="text"
               placeholder="Exemple : fablab, coworking, startup..."
             />
+            <!-- Champ dans lequel l'utilisateur tape sa recherche. -->
           </div>
 
           <div class="controls__field">
+            <!-- Champ de filtre par commune. -->
+
             <label for="commune-select">Filtrer par commune</label>
+
             <select id="commune-select">
+              <!-- Liste déroulante remplie ensuite par JavaScript. -->
+
               <option value="Toutes">Toutes les communes</option>
+              <!-- Option par défaut : aucun filtre commune. -->
             </select>
           </div>
 
           <div class="controls__field">
+            <!-- Champ de filtre par état. -->
+
             <label for="etat-select">Filtrer par état</label>
+
             <select id="etat-select">
+              <!-- Liste déroulante remplie ensuite par JavaScript. -->
+
               <option value="Tous">Tous les états</option>
+              <!-- Option par défaut : aucun filtre état. -->
             </select>
           </div>
         </section>
 
         <section class="results-header">
+          <!-- En-tête de la zone de résultats. -->
+
           <div>
             <h2>Lieux trouvés</h2>
+            <!-- Titre de la liste des résultats. -->
+
             <p>
               Nombre de lieux affichés :
               <span id="counter">0</span>
+              <!-- Compteur mis à jour par JavaScript. -->
             </p>
           </div>
         </section>
 
         <section id="places-container" aria-label="Liste des lieux">
-          <!-- Les cartes sont ajoutées ici avec JavaScript -->
+          <!-- Les cartes sont ajoutées ici avec JavaScript. -->
         </section>
       </section>
 
       <aside class="map-panel" aria-label="Carte interactive des lieux">
+        <!-- Carte complémentaire à la liste des lieux. -->
+
         <div class="map-panel__header">
+          <!-- En-tête du bloc carte. -->
+
           <h2>Carte interactive</h2>
           <p>Clique sur “Voir sur la carte” pour localiser un lieu.</p>
         </div>
 
         <div id="map"></div>
+        <!-- Conteneur vide dans lequel Leaflet injecte la carte. -->
       </aside>
     </main>
 
     <footer class="site-footer">
+      <!-- Pied de page du projet. -->
+
       <div>
         <strong>DevParis Radar</strong>
+        <!-- Nom du projet dans le footer. -->
+
         <p>
           Projet front-end développé avec JavaScript, Vite, Leaflet et OpenData
           Paris.
         </p>
+        <!-- Résumé technique du projet. -->
       </div>
 
       <div class="site-footer__links">
+        <!-- Liens externes du footer. -->
+
         <a
           href="https://github.com/victormetral/devparis-radar"
           target="_blank"
@@ -108,6 +177,7 @@
         >
           GitHub
         </a>
+        <!-- Lien vers le dépôt GitHub, ouvert dans un nouvel onglet. -->
 
         <a
           href="https://opendata.paris.fr"
@@ -116,9 +186,11 @@
         >
           OpenData Paris
         </a>
+        <!-- Lien vers la source des données. -->
       </div>
     </footer>
 
     <script type="module" src="/src/main.js"></script>
+    <!-- Charge le JavaScript principal en module ES. -->
   </body>
 </html>
