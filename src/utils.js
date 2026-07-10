@@ -77,6 +77,15 @@ export const filtrerParCommune = (lieux, commune) => {
 }
 /* Garde uniquement les lieux de la commune sélectionnée. */
 
+export const filtrerParTypologie = (lieux, typologie) => {
+  if (typologie === "Toutes") {
+    return lieux
+  }
+
+  return lieux.filter((lieu) => lieu.typologie === typologie)
+}
+/* Garde uniquement les lieux avec la typologie sélectionnée. */
+
 export const filtrerParEtat = (lieux, etat) => {
   if (etat === "Tous") {
     return lieux
@@ -96,6 +105,14 @@ export const getCommunesUniques = (lieux) => {
   /* Transforme la liste des lieux en liste de communes. */
 
   return [...new Set(communes)].sort()
+  /* Set supprime les doublons, sort() trie de A à Z. */
+}
+
+export const getTypologiesUniques = (lieux) => {
+  const typologies = lieux.map((lieu) => lieu.typologie)
+  /* Transforme la liste des lieux en liste de typologies. */
+
+  return [...new Set(typologies)].sort()
   /* Set supprime les doublons, sort() trie de A à Z. */
 }
 
