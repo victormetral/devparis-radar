@@ -1,4 +1,4 @@
-//Imports 
+// Imports
 import L from "leaflet"
 import "leaflet/dist/leaflet.css"
 
@@ -17,55 +17,72 @@ import {
   getCommunesUniques,
   getEtatsUniques,
   filtrerLieuxTech,
-  filtrerParTypologie,
-  getTypologiesUniques,
 } from "./utils.js"
 
-/* Configuration des icônes Leaflet avec Vite */
+/* ===========================
+   Configuration Leaflet avec Vite
+   =========================== */
 
 delete L.Icon.Default.prototype._getIconUrl
+/* Désactive la recherche automatique des icônes Leaflet. */
 
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: markerIcon2x,
   iconUrl: markerIcon,
   shadowUrl: markerShadow,
 })
+/* Indique à Leaflet où trouver les images des marqueurs avec Vite. */
 
-/* Constantes */
+/* ===========================
+   Constantes
+   =========================== */
 
 const API_BASE_URL =
   "https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/arc_innovation/records"
+/* URL de base de l'API OpenData Paris. */
 
-  /* Sélecteurs DOM */
+/* ===========================
+   Sélecteurs DOM
+   =========================== */
 
 const placesContainer = document.querySelector("#places-container")
 const counter = document.querySelector("#counter")
 const searchInput = document.querySelector("#search-input")
+const clearSearchButton = document.querySelector("#clear-search")
 const communeSelect = document.querySelector("#commune-select")
 const etatSelect = document.querySelector("#etat-select")
+const resetFiltersButton = document.querySelector("#reset-filters")
+
+const categoryFilters = document.querySelector(".category-filters")
+
 const mapElement = document.querySelector("#map")
 const mapPanel = document.querySelector(".map-panel")
+
 const previousPageButton = document.querySelector("#previous-page")
 const nextPageButton = document.querySelector("#next-page")
 const paginationInfo = document.querySelector("#pagination-info")
 const pagination = document.querySelector(".pagination")
-const typologieSelect = document.querySelector("#typologie-select")
-const resetFiltersButton = document.querySelector("#reset-filters")
-const clearSearchButton = document.querySelector("#clear-search")
+/* Récupère les éléments HTML utilisés par JavaScript. */
 
-
-/* État global */
+/* ===========================
+   État global
+   =========================== */
 
 let tousLesLieux = []
-let map = null
-let markerLayer = null
-let markersByLieu = new Map()
 let lieuxFiltresCourants = []
 let pageActuelle = 1
 const lieuxParPage = 12
 
-/* Fonctions utilitaires */
-/* Sécurité affichage HTML dans les popups Leaflet */
+let categorieActive = "Tous"
+
+let map = null
+let markerLayer = null
+let markersByLieu = new Map()
+/* Stocke les données, la pagination, la catégorie active et les éléments Leaflet. */
+
+/* ===========================
+   Sécurité HTML
+   =========================== */
 
 const escapeHtml = (value) => {
   return String(value)
@@ -75,8 +92,11 @@ const escapeHtml = (value) => {
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;")
 }
+/* Évite d'injecter du HTML dangereux dans les popups Leaflet. */
 
-/* Remplissage des filtres */
+/* ===========================
+   Remplissage des filtres select
+   =========================== */
 
 const remplirSelect = (select, valeurs) => {
   valeurs.forEach((valeur) => {
@@ -88,18 +108,111 @@ const remplirSelect = (select, valeurs) => {
     select.appendChild(option)
   })
 }
+/* Ajoute dynamiquement des options dans un select. */
 
 const remplirFiltres = (lieux) => {
   const communes = getCommunesUniques(lieux)
-  const typologies = getTypologiesUniques(lieux)
   const etats = getEtatsUniques(lieux)
 
-remplirSelect(communeSelect, communes)
-remplirSelect(typologieSelect, typologies)
-remplirSelect(etatSelect, etats)
+  remplirSelect(communeSelect, communes)
+  remplirSelect(etatSelect, etats)
 }
+/* Remplit les filtres commune et état à partir des données. */
 
-/* Création des éléments HTML */
+/* ===========================
+   Catégories lisibles pour l'utilisateur
+   =========================== */
+
+const categories = [
+  {
+    label: "Tous",
+    motsCles: [],
+  },
+  {
+    label: "Fablab",
+    motsCles: ["fablab", "fabrication", "atelier", "maker", "prototype"],
+  },
+  {
+    label: "Coworking",
+    motsCles: ["coworking", "tiers-lieu", "espace partagé"],
+  },
+  {
+    label: "Incubateur",
+    motsCles: ["incubateur", "startup", "start-up", "entrepreneur"],
+  },
+  {
+    label: "Numérique",
+    motsCles: ["numérique", "digital", "tech", "logiciel", "open source"],
+  },
+  {
+    label: "Data",
+    motsCles: ["data", "donnée", "données"],
+  },
+  {
+    label: "Robotique",
+    motsCles: ["robotique", "prototype", "industrie"],
+  },
+]
+/* Définit des catégories plus compréhensibles que les typologies brutes de l'API. */
+
+const afficherCategories = () => {
+  categoryFilters.innerHTML = ""
+
+  categories.forEach((categorie) => {
+    const button = document.createElement("button")
+
+    button.type = "button"
+    button.textContent = categorie.label
+    button.classList.add("category-button")
+
+    if (categorie.label === categorieActive) {
+      button.classList.add("is-active")
+    }
+
+    button.addEventListener("click", () => {
+      categorieActive = categorie.label
+      pageActuelle = 1
+      appliquerFiltres()
+    })
+
+    categoryFilters.appendChild(button)
+  })
+}
+/* Crée les boutons de catégories et active le bon bouton au clic. */
+
+const filtrerParCategorie = (lieux, categorieActive) => {
+  if (categorieActive === "Tous") {
+    return lieux
+  }
+
+  const categorie = categories.find((item) => item.label === categorieActive)
+
+  if (!categorie) {
+    return lieux
+  }
+
+  return lieux.filter((lieu) => {
+    const texte = [
+      lieu.nom,
+      lieu.adresse,
+      lieu.commune,
+      lieu.etat,
+      lieu.typologie,
+      lieu.typeInnovation,
+      lieu.description,
+      lieu.siteInternet,
+    ]
+      .join(" ")
+      .toLowerCase()
+
+    return categorie.motsCles.some((motCle) => texte.includes(motCle))
+  })
+}
+/* Filtre les lieux selon les mots-clés de la catégorie active. */
+
+/* ===========================
+   Création d'éléments HTML
+   =========================== */
 
 const creerParagraphe = (label, valeur) => {
   const paragraph = document.createElement("p")
@@ -112,6 +225,7 @@ const creerParagraphe = (label, valeur) => {
 
   return paragraph
 }
+/* Crée une ligne de texte avec un label en gras. */
 
 const creerLien = (texte, href, classeSupplementaire = "") => {
   const link = document.createElement("a")
@@ -126,8 +240,11 @@ const creerLien = (texte, href, classeSupplementaire = "") => {
 
   return link
 }
+/* Crée un lien réutilisable pour site, email ou téléphone. */
 
-/* Carte Leaflet */
+/* ===========================
+   Carte Leaflet
+   =========================== */
 
 const initialiserCarte = () => {
   if (!mapElement) {
@@ -142,6 +259,7 @@ const initialiserCarte = () => {
 
   markerLayer = L.layerGroup().addTo(map)
 }
+/* Initialise la carte centrée sur Paris. */
 
 const centrerCarteSurLieu = (lieu) => {
   if (!lieu.coordonnees || !map) {
@@ -178,6 +296,7 @@ const centrerCarteSurLieu = (lieu) => {
     activeCard.classList.add("is-active")
   }
 }
+/* Centre la carte sur un lieu et met sa carte HTML en évidence. */
 
 const afficherMarqueurs = (lieux) => {
   if (!map || !markerLayer) {
@@ -217,8 +336,11 @@ const afficherMarqueurs = (lieux) => {
     })
   }
 }
+/* Affiche les marqueurs correspondant aux lieux filtrés. */
 
-/* Affichage des cartes */
+/* ===========================
+   Affichage des cartes
+   =========================== */
 
 const creerCarteLieu = (lieu) => {
   const card = document.createElement("article")
@@ -296,33 +418,7 @@ const creerCarteLieu = (lieu) => {
 
   return card
 }
-
-const paginerLieux = (lieux) => {
-  const debut = (pageActuelle - 1) * lieuxParPage
-  const fin = debut + lieuxParPage
-
-  return lieux.slice(debut, fin)
-}
-
-const mettreAJourPagination = () => {
-  const nombrePages = Math.ceil(lieuxFiltresCourants.length / lieuxParPage)
-
-  paginationInfo.textContent = `Page ${pageActuelle} / ${nombrePages || 1}`
-
-  previousPageButton.disabled = pageActuelle === 1
-  nextPageButton.disabled = pageActuelle >= nombrePages
-}
-
-const scrollVersPagination = () => {
-  if (!pagination) {
-    return
-  }
-
-  pagination.scrollIntoView({
-    behavior: "smooth",
-    block: "center",
-  })
-}
+/* Crée une carte HTML complète pour un lieu. */
 
 const afficherLieux = (lieux) => {
   placesContainer.innerHTML = ""
@@ -345,33 +441,72 @@ const afficherLieux = (lieux) => {
 
   counter.textContent = lieuxFiltresCourants.length
 }
+/* Affiche les cartes de la page actuelle. */
 
-/* Filtres */
+/* ===========================
+   Pagination
+   =========================== */
+
+const paginerLieux = (lieux) => {
+  const debut = (pageActuelle - 1) * lieuxParPage
+  const fin = debut + lieuxParPage
+
+  return lieux.slice(debut, fin)
+}
+/* Découpe les résultats pour afficher seulement une page. */
+
+const mettreAJourPagination = () => {
+  const nombrePages = Math.ceil(lieuxFiltresCourants.length / lieuxParPage)
+
+  paginationInfo.textContent = `Page ${pageActuelle} / ${nombrePages || 1}`
+
+  previousPageButton.disabled = pageActuelle === 1
+  nextPageButton.disabled = pageActuelle >= nombrePages
+}
+/* Met à jour le texte et l'état des boutons de pagination. */
+
+const scrollVersPagination = () => {
+  if (!pagination) {
+    return
+  }
+
+  pagination.scrollIntoView({
+    behavior: "smooth",
+    block: "center",
+  })
+}
+/* Garde les boutons de pagination visibles après un changement de page. */
+
+/* ===========================
+   Filtres
+   =========================== */
 
 const resetFiltres = () => {
   searchInput.value = ""
   communeSelect.value = "Toutes"
-  typologieSelect.value = "Toutes"
   etatSelect.value = "Tous"
+  categorieActive = "Tous"
 
   pageActuelle = 1
 
   appliquerFiltres()
 }
+/* Réinitialise tous les filtres et revient à la première page. */
 
 const appliquerFiltres = () => {
   const recherche = searchInput.value
   const commune = communeSelect.value
   const etat = etatSelect.value
-  const typologie = typologieSelect.value
 
   let lieuxFiltres = filtrerParRecherche(tousLesLieux, recherche)
-  lieuxFiltres = filtrerParCommune(lieuxFiltres, commune) 
-  lieuxFiltres = filtrerParTypologie(lieuxFiltres, typologie)
+  lieuxFiltres = filtrerParCommune(lieuxFiltres, commune)
+  lieuxFiltres = filtrerParCategorie(lieuxFiltres, categorieActive)
   lieuxFiltres = filtrerParEtat(lieuxFiltres, etat)
 
   lieuxFiltresCourants = lieuxFiltres
   pageActuelle = 1
+
+  afficherCategories()
 
   const lieuxPaginees = paginerLieux(lieuxFiltresCourants)
 
@@ -379,8 +514,11 @@ const appliquerFiltres = () => {
   afficherMarqueurs(lieuxFiltresCourants)
   mettreAJourPagination()
 }
+/* Applique recherche, commune, catégorie et état, puis rafraîchit l'affichage. */
 
-/* Chargement API */
+/* ===========================
+   Chargement API
+   =========================== */
 
 const chargerTousLesResultats = async () => {
   const limit = 100
@@ -402,6 +540,7 @@ const chargerTousLesResultats = async () => {
 
   return resultats
 }
+/* Charge tous les résultats de l'API par paquets de 100. */
 
 const chargerLieux = async () => {
   try {
@@ -412,6 +551,8 @@ const chargerLieux = async () => {
     tousLesLieux = filtrerLieuxTech(lieuxFormates)
 
     remplirFiltres(tousLesLieux)
+    afficherCategories()
+
     lieuxFiltresCourants = tousLesLieux
 
     afficherLieux(paginerLieux(lieuxFiltresCourants))
@@ -425,14 +566,17 @@ const chargerLieux = async () => {
     console.error(error)
   }
 }
+/* Charge les données, les formate, les filtre, puis initialise l'affichage. */
 
-/* Événements */
+/* ===========================
+   Événements
+   =========================== */
 
 searchInput.addEventListener("input", appliquerFiltres)
 communeSelect.addEventListener("change", appliquerFiltres)
 etatSelect.addEventListener("change", appliquerFiltres)
-typologieSelect.addEventListener("change", appliquerFiltres)
 resetFiltersButton.addEventListener("click", resetFiltres)
+/* Relance les filtres quand l'utilisateur interagit avec les champs. */
 
 previousPageButton.addEventListener("click", () => {
   if (pageActuelle > 1) {
@@ -443,6 +587,7 @@ previousPageButton.addEventListener("click", () => {
     scrollVersPagination()
   }
 })
+/* Affiche la page précédente. */
 
 nextPageButton.addEventListener("click", () => {
   const nombrePages = Math.ceil(lieuxFiltresCourants.length / lieuxParPage)
@@ -455,6 +600,7 @@ nextPageButton.addEventListener("click", () => {
     scrollVersPagination()
   }
 })
+/* Affiche la page suivante. */
 
 clearSearchButton.addEventListener("click", () => {
   searchInput.value = ""
@@ -462,8 +608,12 @@ clearSearchButton.addEventListener("click", () => {
   appliquerFiltres()
   searchInput.focus()
 })
+/* Vide la recherche et remet le focus dans le champ. */
 
-/* Initialisation */
+/* ===========================
+   Initialisation
+   =========================== */
 
 initialiserCarte()
 chargerLieux()
+/* Lance la carte puis charge les lieux. */

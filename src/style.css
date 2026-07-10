@@ -280,6 +280,39 @@ body {
   font-weight: bold;
   cursor: pointer;
 }
+
+.category-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin: var(--space-lg) 0 var(--space-xl);
+}
+/* Affiche les boutons de catégories sur plusieurs lignes si besoin. */
+
+.category-button {
+  padding: 10px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-weight: bold;
+  cursor: pointer;
+}
+/* Style les boutons de catégories comme des pastilles. */
+
+.category-button:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+/* Change le style au survol. */
+
+.category-button.is-active {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary);
+  color: white;
+}
+/* Met en évidence la catégorie active. */
+
 /* Donne un style visible au bouton de réinitialisation. */
 
 #reset-filters:hover {
