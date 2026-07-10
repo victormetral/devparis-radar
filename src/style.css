@@ -232,6 +232,28 @@ body {
 }
 /* Ajoute un état visuel quand un champ est sélectionné. */
 
+.controls__field--button {
+  justify-content: end;
+}
+/* Place le bouton en bas du champ pour l'aligner avec les inputs. */
+
+#reset-filters {
+  height: 44px;
+  padding: 0 var(--space-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-primary);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+/* Donne un style visible au bouton de réinitialisation. */
+
+#reset-filters:hover {
+  opacity: 0.9;
+}
+/* Ajoute un léger effet au survol. */
+
 /* ===========================
    Résultats
    =========================== */

@@ -50,6 +50,7 @@ const nextPageButton = document.querySelector("#next-page")
 const paginationInfo = document.querySelector("#pagination-info")
 const pagination = document.querySelector(".pagination")
 const typologieSelect = document.querySelector("#typologie-select")
+const resetFiltersButton = document.querySelector("#reset-filters")
 
 
 /* État global */
@@ -346,6 +347,17 @@ const afficherLieux = (lieux) => {
 
 /* Filtres */
 
+const resetFiltres = () => {
+  searchInput.value = ""
+  communeSelect.value = "Toutes"
+  typologieSelect.value = "Toutes"
+  etatSelect.value = "Tous"
+
+  pageActuelle = 1
+
+  appliquerFiltres()
+}
+
 const appliquerFiltres = () => {
   const recherche = searchInput.value
   const commune = communeSelect.value
@@ -419,6 +431,7 @@ searchInput.addEventListener("input", appliquerFiltres)
 communeSelect.addEventListener("change", appliquerFiltres)
 etatSelect.addEventListener("change", appliquerFiltres)
 typologieSelect.addEventListener("change", appliquerFiltres)
+resetFiltersButton.addEventListener("click", resetFiltres)
 
 previousPageButton.addEventListener("click", () => {
   if (pageActuelle > 1) {
