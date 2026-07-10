@@ -60,7 +60,7 @@ const mapPanel = document.querySelector(".map-panel")
 
 const previousPageButton = document.querySelector("#previous-page")
 const nextPageButton = document.querySelector("#next-page")
-const paginationInfo = document.querySelector("#pagination-info")
+const paginationPages = document.querySelector("#pagination-pages")
 const pagination = document.querySelector(".pagination")
 /* Récupère les éléments HTML utilisés par JavaScript. */
 
@@ -444,7 +444,7 @@ const afficherLieux = (lieux) => {
 /* Affiche les cartes de la page actuelle. */
 
 /* ===========================
-   Pagination
+   Pagination numérotée
    =========================== */
 
 const paginerLieux = (lieux) => {
@@ -456,14 +456,36 @@ const paginerLieux = (lieux) => {
 /* Découpe les résultats pour afficher seulement une page. */
 
 const mettreAJourPagination = () => {
-  const nombrePages = Math.ceil(lieuxFiltresCourants.length / lieuxParPage)
+  const nombrePages = Math.ceil(lieuxFiltresCourants.length / lieuxParPage) || 1
 
-  paginationInfo.textContent = `Page ${pageActuelle} / ${nombrePages || 1}`
+  paginationPages.innerHTML = ""
+
+  for (let numeroPage = 1; numeroPage <= nombrePages; numeroPage += 1) {
+    const button = document.createElement("button")
+
+    button.type = "button"
+    button.textContent = numeroPage
+    button.classList.add("pagination__page-button")
+
+    if (numeroPage === pageActuelle) {
+      button.classList.add("is-active")
+    }
+
+    button.addEventListener("click", () => {
+      pageActuelle = numeroPage
+
+      afficherLieux(paginerLieux(lieuxFiltresCourants))
+      mettreAJourPagination()
+      scrollVersPagination()
+    })
+
+    paginationPages.appendChild(button)
+  }
 
   previousPageButton.disabled = pageActuelle === 1
   nextPageButton.disabled = pageActuelle >= nombrePages
 }
-/* Met à jour le texte et l'état des boutons de pagination. */
+/* Crée les boutons de pages et met à jour Précédent / Suivant. */
 
 const scrollVersPagination = () => {
   if (!pagination) {
@@ -590,7 +612,7 @@ previousPageButton.addEventListener("click", () => {
 /* Affiche la page précédente. */
 
 nextPageButton.addEventListener("click", () => {
-  const nombrePages = Math.ceil(lieuxFiltresCourants.length / lieuxParPage)
+  const nombrePages = Math.ceil(lieuxFiltresCourants.length / lieuxParPage) || 1
 
   if (pageActuelle < nombrePages) {
     pageActuelle += 1

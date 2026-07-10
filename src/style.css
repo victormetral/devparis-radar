@@ -27,7 +27,7 @@
 
   --container-max-width: 1440px;
 }
-/* Centralise les couleurs, ombres, arrondis, espacements et largeurs. */
+/* Centralise les couleurs, ombres, arrondis, espacements et largeur maximale. */
 
 /* ===========================
    Base
@@ -46,6 +46,13 @@ body {
   color: var(--color-text);
 }
 /* Définit la police, le fond général et la couleur du texte. */
+
+button,
+input,
+select {
+  font: inherit;
+}
+/* Les champs et boutons utilisent la même police que le reste du site. */
 
 /* ===========================
    Header / Hero
@@ -76,12 +83,12 @@ body {
   box-shadow: var(--shadow-card);
   overflow: hidden;
 }
-/* Crée la grande bannière d’introduction en deux colonnes. */
+/* Crée la grande section d'introduction en deux colonnes. */
 
 .hero__content {
   min-width: 0;
 }
-/* Empêche le texte de forcer la largeur de la grille. */
+/* Empêche le texte de casser la largeur de la grille. */
 
 .hero__tagline {
   margin: 0 0 var(--space-sm);
@@ -91,7 +98,7 @@ body {
   text-transform: uppercase;
   letter-spacing: 1px;
 }
-/* Style de la petite phrase d’accroche. */
+/* Style de la petite phrase d'accroche. */
 
 .hero h1 {
   margin: 0 0 var(--space-md);
@@ -99,7 +106,7 @@ body {
   line-height: 0.95;
   letter-spacing: -2px;
 }
-/* Style du grand titre principal responsive. */
+/* Style du grand titre responsive. */
 
 .hero__description {
   max-width: 720px;
@@ -114,7 +121,7 @@ body {
   position: relative;
   min-height: 240px;
 }
-/* Zone qui contient les cartes décoratives flottantes. */
+/* Sert de repère pour placer les cartes décoratives en absolute. */
 
 .hero__card {
   position: absolute;
@@ -140,44 +147,45 @@ body {
   color: var(--color-text);
   font-size: 17px;
 }
-/* Style du texte principal dans les cartes du hero. */
+/* Style du texte important dans les cartes du hero. */
 
 .hero__card--primary {
   top: 0;
   right: 0;
 }
-/* Place la première carte en haut à droite. */
+/* Place la carte API en haut à droite. */
 
 .hero__card--secondary {
   top: 82px;
   left: 0;
 }
-/* Place la deuxième carte au milieu à gauche. */
+/* Place la carte Leaflet au milieu à gauche. */
 
 .hero__card--tertiary {
   right: 28px;
   bottom: 0;
 }
-/* Place la troisième carte en bas à droite. */
+/* Place la carte Portfolio en bas à droite. */
 
 /* ===========================
    Layout principal
    =========================== */
 
 .app-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 420px;
-  gap: var(--space-xl);
   max-width: var(--container-max-width);
   margin: 0 auto;
   padding: 0 var(--space-xl) var(--space-2xl);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 420px;
+  gap: var(--space-xl);
+  align-items: start;
 }
-/* Sépare les résultats à gauche et la carte à droite. */
+/* Organise la page en deux colonnes : contenu et carte. */
 
 .app-content {
   min-width: 0;
 }
-/* Empêche le contenu principal de casser la grille. */
+/* Empêche le contenu de dépasser dans la grille. */
 
 /* ===========================
    Filtres
@@ -185,29 +193,34 @@ body {
 
 .controls {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr;
-  column-gap: var(--space-xl);
-  row-gap: var(--space-lg);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-md);
   padding: var(--space-lg);
-  background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
   box-shadow: var(--shadow-card);
 }
-/* Crée une carte contenant les trois filtres. */
+/* Affiche les filtres dans une grille responsive. */
 
 .controls__field {
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
-  min-width: 0;
 }
-/* Aligne le label au-dessus de son champ. */
+/* Organise chaque label et champ verticalement. */
+
+.controls__field--button {
+  justify-content: end;
+}
+/* Aligne le bouton reset avec les autres champs. */
 
 .controls label {
+  color: var(--color-muted);
+  font-size: 14px;
   font-weight: bold;
 }
-/* Met les labels des filtres en gras. */
+/* Style les labels des champs. */
 
 .controls input,
 .controls select {
@@ -218,34 +231,28 @@ body {
   padding: 0 var(--space-md);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  font-size: 16px;
-  background-color: var(--color-surface);
+  background-color: white;
   color: var(--color-text);
+  outline: none;
 }
-/* Donne un style commun aux champs de recherche et listes déroulantes. */
+/* Donne un style commun aux champs de recherche et aux selects. */
 
 .controls input:focus,
 .controls select:focus {
-  outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(43, 92, 255, 0.15);
 }
-/* Ajoute un état visuel quand un champ est sélectionné. */
-
-.controls__field--button {
-  justify-content: end;
-}
-/* Place le bouton en bas du champ pour l'aligner avec les inputs. */
+/* Affiche un focus personnalisé bleu. */
 
 .search-field {
   position: relative;
 }
-/* Sert de repère pour placer le bouton de suppression dans le champ. */
+/* Sert de repère pour placer le bouton d'effacement dans le champ. */
 
 .search-field input {
   padding-right: 44px;
 }
-/* Ajoute de l'espace à droite pour éviter que le texte passe sous le bouton. */
+/* Laisse de la place à droite pour le bouton ×. */
 
 #clear-search {
   position: absolute;
@@ -262,24 +269,34 @@ body {
   cursor: pointer;
   transform: translateY(-50%);
 }
-/* Place le bouton × à droite dans le champ de recherche. */
+/* Place le bouton × dans le champ de recherche. */
 
 #clear-search:hover {
   background-color: var(--color-primary);
   color: white;
 }
-/* Rend le bouton plus visible au survol. */
+/* Rend le bouton d'effacement plus visible au survol. */
 
 #reset-filters {
   height: 44px;
   padding: 0 var(--space-lg);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-primary);
   border-radius: var(--radius-sm);
   background-color: var(--color-primary);
   color: white;
   font-weight: bold;
   cursor: pointer;
 }
+/* Donne un style visible au bouton de réinitialisation. */
+
+#reset-filters:hover {
+  opacity: 0.9;
+}
+/* Ajoute un léger effet au survol du bouton reset. */
+
+/* ===========================
+   Catégories rapides
+   =========================== */
 
 .category-filters {
   display: flex;
@@ -304,7 +321,7 @@ body {
   border-color: var(--color-primary);
   color: var(--color-primary);
 }
-/* Change le style au survol. */
+/* Change le style d'une catégorie au survol. */
 
 .category-button.is-active {
   border-color: var(--color-primary);
@@ -313,85 +330,31 @@ body {
 }
 /* Met en évidence la catégorie active. */
 
-/* Donne un style visible au bouton de réinitialisation. */
-
-#reset-filters:hover {
-  opacity: 0.9;
-}
-/* Ajoute un léger effet au survol. */
-
 /* ===========================
-   Résultats
+   En-tête des résultats
    =========================== */
 
 .results-header {
-  margin-top: var(--space-xl);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: var(--space-lg);
 }
-/* Espace le titre des résultats des autres blocs. */
+/* Aligne le titre des résultats et les informations associées. */
 
 .results-header h2 {
-  margin: 0;
-  font-size: 28px;
+  margin: 0 0 var(--space-sm);
 }
-/* Style du titre "Lieux trouvés". */
+/* Supprime la marge inutile autour du titre. */
 
 .results-header p {
-  margin: var(--space-sm) 0 0;
-  color: var(--color-muted);
-}
-/* Style du texte du compteur. */
-
-.results-header #counter {
-  color: var(--color-primary);
-  font-weight: bold;
-}
-/* Met le nombre de résultats en bleu. */
-
-/* ===========================
-   Carte Leaflet
-   =========================== */
-
-.map-panel {
-  position: sticky;
-  top: var(--space-lg);
-  align-self: start;
-  overflow: hidden;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-card);
-}
-/* Bloc contenant la carte, fixé pendant le scroll sur grand écran. */
-
-.map-panel__header {
-  padding: var(--space-lg);
-  border-bottom: 1px solid var(--color-border);
-}
-/* En-tête du panneau de carte. */
-
-.map-panel__header h2 {
   margin: 0;
-  font-size: 24px;
-}
-/* Titre de la carte. */
-
-.map-panel__header p {
-  margin: var(--space-sm) 0 0;
   color: var(--color-muted);
-  line-height: 1.5;
 }
-/* Texte descriptif de la carte. */
-
-#map {
-  width: 100%;
-  height: 620px;
-  background-color: var(--color-map-bg);
-}
-/* Définit la taille du conteneur Leaflet. */
+/* Style le compteur de lieux. */
 
 /* ===========================
-   Grille des lieux
+   Liste des cartes
    =========================== */
 
 #places-container {
@@ -399,22 +362,21 @@ body {
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: var(--space-lg);
 }
-/* Affiche automatiquement les cartes en grille responsive. */
-
-/* ===========================
-   Cartes des lieux
-   =========================== */
+/* Affiche les cartes dans une grille responsive. */
 
 .place-card {
-  background: var(--color-surface);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
   padding: var(--space-lg);
-  border: 1px solid transparent;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
+  background-color: var(--color-surface);
   box-shadow: var(--shadow-card);
   transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    border-color 0.18s ease;
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 /* Style général d'une carte de lieu. */
 
@@ -422,61 +384,56 @@ body {
   transform: translateY(-3px);
   box-shadow: var(--shadow-card-hover);
 }
-/* Soulève légèrement la carte au survol. */
+/* Donne un léger effet de profondeur au survol. */
 
 .place-card.is-active {
   border-color: var(--color-primary);
   outline: 3px solid rgba(43, 92, 255, 0.22);
 }
-/* Met en évidence la carte sélectionnée 'voir sur la carte'. */
+/* Met en évidence la carte sélectionnée depuis la carte Leaflet. */
 
 .place-card h3 {
-  margin: 0 0 var(--space-sm);
-  color: var(--color-primary);
+  margin: 0;
   font-size: 20px;
 }
-/* Style du nom du lieu. */
+/* Style le nom du lieu. */
 
 .place-card p {
-  margin: var(--space-sm) 0;
+  margin: 0;
+  color: var(--color-muted);
   line-height: 1.5;
 }
-/* Style général des paragraphes dans une carte. */
+/* Style les paragraphes dans les cartes. */
 
 .place-card strong {
   color: var(--color-text);
 }
-/* Met les labels de données en couleur principale du texte. */
+/* Met les labels en texte plus fort. */
 
 .place-card__status {
-  display: inline-block;
-  width: fit-content;
-  padding: 4px 10px;
+  align-self: flex-start;
+  padding: 5px 9px;
   border-radius: 999px;
   background-color: var(--color-primary-soft);
   color: var(--color-primary);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: bold;
-  text-transform: capitalize;
 }
-/* Crée le badge d'état du lieu. */
+/* Affiche l'état du lieu sous forme de badge. */
 
 .place-card__description {
-  display: -webkit-box;
-  overflow: hidden;
-  color: var(--color-muted);
-  line-height: 1.5;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
+  margin-top: var(--space-sm);
 }
-/* Limite la description à 4 lignes. */
+/* Ajoute un peu d'espace avant la description. */
 
 .place-card__link {
-  display: inline-block;
-  width: fit-content;
-  margin-top: var(--space-sm);
-  padding: 8px 12px;
-  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  margin-top: auto;
+  padding: 0 var(--space-md);
+  border: 1px solid var(--color-primary);
   border-radius: var(--radius-sm);
   background-color: var(--color-primary);
   color: white;
@@ -484,34 +441,33 @@ body {
   text-decoration: none;
   cursor: pointer;
 }
-/* Style du bouton/lien principal. */
+/* Style les liens et boutons principaux dans les cartes. */
 
 .place-card__link:hover {
   opacity: 0.9;
 }
-/* Ajoute un effet léger au survol des liens. */
+/* Ajoute un effet simple au survol. */
 
 .place-card__link--secondary {
-  margin-left: var(--space-sm);
-  background-color: transparent;
+  margin-top: 0;
+  background-color: var(--color-surface);
   color: var(--color-primary);
-  border: 1px solid var(--color-primary);
 }
-/* Variante secondaire pour email et téléphone. */
+/* Style secondaire pour email et téléphone. */
 
 .empty-message {
   grid-column: 1 / -1;
   padding: var(--space-lg);
-  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
+  background-color: var(--color-surface);
   color: var(--color-muted);
-  font-weight: bold;
+  text-align: center;
 }
-/* Message affiché quand aucun résultat n'est trouvé. */
+/* Affiche le message vide sur toute la largeur de la grille. */
 
 /* ===========================
-   Pagination
+   Pagination numérotée
    =========================== */
 
 .pagination {
@@ -521,7 +477,7 @@ body {
   gap: var(--space-md);
   margin-top: var(--space-xl);
 }
-/* Centre les boutons de pagination sous les cartes. */
+/* Centre la pagination sous les cartes. */
 
 .pagination button {
   height: 42px;
@@ -533,67 +489,127 @@ body {
   font-weight: bold;
   cursor: pointer;
 }
-/* Donne un style propre aux boutons Précédent et Suivant. */
+/* Style les boutons Précédent et Suivant. */
 
 .pagination button:hover:not(:disabled) {
   border-color: var(--color-primary);
   color: var(--color-primary);
 }
-/* Change la couleur du bouton au survol, sauf s'il est désactivé. */
+/* Change la couleur d'un bouton actif au survol. */
 
 .pagination button:disabled {
   opacity: 0.45;
   cursor: not-allowed;
 }
-/* Rend visuellement clair qu'un bouton désactivé n'est pas cliquable. */
+/* Rend les boutons désactivés moins visibles. */
 
-#pagination-info {
-  color: var(--color-muted);
-  font-weight: bold;
+.pagination__pages {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-sm);
 }
-/* Style du texte Page 1 / X. */
+/* Affiche les numéros de pages sur une ou plusieurs lignes. */
+
+.pagination__page-button {
+  min-width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-weight: bold;
+  cursor: pointer;
+}
+/* Style les boutons numérotés de pagination. */
+
+.pagination__page-button:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+/* Change le style d'un numéro de page au survol. */
+
+.pagination__page-button.is-active {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary);
+  color: white;
+}
+/* Met en évidence la page active. */
+
+/* ===========================
+   Carte Leaflet
+   =========================== */
+
+.map-panel {
+  position: sticky;
+  top: var(--space-xl);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+/* Garde la carte visible pendant le scroll sur grand écran. */
+
+.map-panel__header {
+  padding: var(--space-lg);
+  border-bottom: 1px solid var(--color-border);
+}
+/* Style l'en-tête du panneau carte. */
+
+.map-panel__header h2 {
+  margin: 0 0 var(--space-sm);
+}
+/* Supprime la marge inutile autour du titre de carte. */
+
+.map-panel__header p {
+  margin: 0;
+  color: var(--color-muted);
+}
+/* Style le texte d'aide de la carte. */
+
+#map {
+  height: 620px;
+  background-color: var(--color-map-bg);
+}
+/* Définit la hauteur du conteneur Leaflet. */
 
 /* ===========================
    Footer
    =========================== */
 
 .site-footer {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--space-lg);
   max-width: var(--container-max-width);
   margin: 0 auto;
   padding: var(--space-xl);
-  border-top: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
   color: var(--color-muted);
 }
-/* Pied de page avec texte à gauche et liens à droite. */
-
-.site-footer strong {
-  color: var(--color-text);
-}
-/* Met le nom du projet en couleur principale. */
+/* Organise le footer avec le résumé du projet et les liens. */
 
 .site-footer p {
   margin: var(--space-sm) 0 0;
 }
-/* Espace le texte du footer. */
+/* Réduit la marge du texte dans le footer. */
 
 .site-footer__links {
   display: flex;
   gap: var(--space-md);
-  align-items: center;
 }
-/* Aligne les liens du footer. */
+/* Affiche les liens du footer côte à côte. */
 
-.site-footer__links a {
+.site-footer a {
   color: var(--color-primary);
   font-weight: bold;
   text-decoration: none;
 }
-/* Style des liens du footer. */
+/* Style les liens externes. */
 
-.site-footer__links a:hover {
+.site-footer a:hover {
   text-decoration: underline;
 }
 /* Souligne les liens au survol. */
@@ -615,15 +631,18 @@ body {
     height: 420px;
   }
 }
-/* Passe la page en une colonne sur tablette. */
+/* Sur tablette, la carte passe sous les résultats. */
 
 /* ===========================
    Responsive mobile
    =========================== */
 
-@media (max-width: 760px) {
-  .site-header {
-    padding: var(--space-lg);
+@media (max-width: 700px) {
+  .site-header,
+  .app-layout,
+  .site-footer {
+    padding-left: var(--space-md);
+    padding-right: var(--space-md);
   }
 
   .hero {
@@ -635,17 +654,21 @@ body {
     display: none;
   }
 
-  .app-layout {
-    padding: 0 var(--space-lg) var(--space-xl);
-  }
-
   .controls {
     grid-template-columns: 1fr;
   }
 
+  #places-container {
+    grid-template-columns: 1fr;
+  }
+
+  .pagination {
+    flex-direction: column;
+  }
+
   .site-footer {
     flex-direction: column;
-    padding: var(--space-lg);
+    align-items: flex-start;
   }
 }
-/* Adapte le hero, les filtres et le footer aux petits écrans. */
+/* Sur mobile, tout passe en une seule colonne et les éléments décoratifs sont simplifiés. */

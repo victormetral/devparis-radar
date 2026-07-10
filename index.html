@@ -72,26 +72,38 @@
       <!-- Contenu principal : résultats à gauche et carte à droite. -->
 
       <section class="app-content">
-        <!-- Zone principale contenant les filtres et les cartes de lieux. -->
+        <!-- Zone principale contenant les filtres, catégories, résultats et pagination. -->
 
         <section class="controls" aria-label="Filtres de recherche">
-          <!-- Zone des filtres de recherche. -->
+          <!-- Zone des filtres principaux. -->
 
           <div class="controls__field">
+            <!-- Champ de recherche texte. -->
+
             <label for="search-input">Rechercher un lieu</label>
+            <!-- Label lié à l'input grâce à l'attribut for. -->
 
-          <div class="search-field">
-            <input
-            id="search-input"
-            type="text"
-            placeholder="Nom, commune, typologie, innovation..."/>
+            <div class="search-field">
+              <!-- Conteneur permettant de placer le bouton d'effacement dans le champ. -->
 
-            <button id="clear-search" type="button" aria-label="Effacer la recherche">
-            ×
-            </button>
+              <input
+                id="search-input"
+                type="text"
+                placeholder="Nom, commune, typologie, innovation..."
+              />
+              <!-- Champ dans lequel l'utilisateur tape sa recherche. -->
+
+              <button
+                id="clear-search"
+                type="button"
+                aria-label="Effacer la recherche"
+              >
+                ×
+              </button>
+              <!-- Bouton permettant de vider rapidement la recherche. -->
+            </div>
           </div>
-          </div>
-          
+
           <div class="controls__field">
             <!-- Champ de filtre par commune. -->
 
@@ -119,14 +131,19 @@
           </div>
 
           <div class="controls__field controls__field--button">
-  <button id="reset-filters" type="button">
-    Réinitialiser les filtres
-  </button>
-</div>
+            <!-- Champ contenant le bouton de réinitialisation. -->
+
+            <button id="reset-filters" type="button">
+              Réinitialiser les filtres
+            </button>
+            <!-- Bouton qui remet recherche, filtres et catégories à zéro. -->
+          </div>
         </section>
-<section class="category-filters" aria-label="Filtres rapides par typologie">
-  <!-- Les boutons de catégories sont ajoutés ici avec JavaScript -->
-</section>
+
+        <section class="category-filters" aria-label="Filtres rapides par catégorie">
+          <!-- Les boutons de catégories sont ajoutés ici avec JavaScript. -->
+        </section>
+
         <section class="results-header">
           <!-- En-tête de la zone de résultats. -->
 
@@ -146,14 +163,19 @@
           <!-- Les cartes sont ajoutées ici avec JavaScript. -->
         </section>
 
-        <nav class="pagination" aria-label="Pagination des résultats">
-          <button id="previous-page" type="button">Précédent</button>
+          <nav class="pagination" aria-label="Pagination des résultats">
+  <!-- Navigation entre les pages de résultats. -->
 
-          <span id="pagination-info">Page 1 / 1</span>
+  <button id="previous-page" type="button">Précédent</button>
+  <!-- Bouton pour aller à la page précédente. -->
 
-          <button id="next-page" type="button">Suivant</button>
-        </nav>
-      </section>
+  <div id="pagination-pages" class="pagination__pages">
+    <!-- Les numéros de pages sont ajoutés ici avec JavaScript. -->
+  </div>
+
+  <button id="next-page" type="button">Suivant</button>
+  <!-- Bouton pour aller à la page suivante. -->
+</nav>      </section>
 
       <aside class="map-panel" aria-label="Carte interactive des lieux">
         <!-- Carte complémentaire à la liste des lieux. -->
