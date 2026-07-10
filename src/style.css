@@ -237,6 +237,39 @@ body {
 }
 /* Place le bouton en bas du champ pour l'aligner avec les inputs. */
 
+.search-field {
+  position: relative;
+}
+/* Sert de repère pour placer le bouton de suppression dans le champ. */
+
+.search-field input {
+  padding-right: 44px;
+}
+/* Ajoute de l'espace à droite pour éviter que le texte passe sous le bouton. */
+
+#clear-search {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  background-color: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+/* Place le bouton × à droite dans le champ de recherche. */
+
+#clear-search:hover {
+  background-color: var(--color-primary);
+  color: white;
+}
+/* Rend le bouton plus visible au survol. */
+
 #reset-filters {
   height: 44px;
   padding: 0 var(--space-lg);

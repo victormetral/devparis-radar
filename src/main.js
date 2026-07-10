@@ -51,6 +51,7 @@ const paginationInfo = document.querySelector("#pagination-info")
 const pagination = document.querySelector(".pagination")
 const typologieSelect = document.querySelector("#typologie-select")
 const resetFiltersButton = document.querySelector("#reset-filters")
+const clearSearchButton = document.querySelector("#clear-search")
 
 
 /* État global */
@@ -453,6 +454,13 @@ nextPageButton.addEventListener("click", () => {
     mettreAJourPagination()
     scrollVersPagination()
   }
+})
+
+clearSearchButton.addEventListener("click", () => {
+  searchInput.value = ""
+  pageActuelle = 1
+  appliquerFiltres()
+  searchInput.focus()
 })
 
 /* Initialisation */
