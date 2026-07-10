@@ -17,6 +17,8 @@ import {
   getCommunesUniques,
   getEtatsUniques,
   filtrerLieuxTech,
+  filtrerParTypologie,
+  getTypologiesUniques,
 } from "./utils.js"
 
 /* Configuration des icônes Leaflet avec Vite */
@@ -47,6 +49,7 @@ const previousPageButton = document.querySelector("#previous-page")
 const nextPageButton = document.querySelector("#next-page")
 const paginationInfo = document.querySelector("#pagination-info")
 const pagination = document.querySelector(".pagination")
+const typologieSelect = document.querySelector("#typologie-select")
 
 
 /* État global */
@@ -86,10 +89,12 @@ const remplirSelect = (select, valeurs) => {
 
 const remplirFiltres = (lieux) => {
   const communes = getCommunesUniques(lieux)
+  const typologies = getTypologiesUniques(lieux)
   const etats = getEtatsUniques(lieux)
 
-  remplirSelect(communeSelect, communes)
-  remplirSelect(etatSelect, etats)
+remplirSelect(communeSelect, communes)
+remplirSelect(typologieSelect, typologies)
+remplirSelect(etatSelect, etats)
 }
 
 /* Création des éléments HTML */
@@ -345,9 +350,11 @@ const appliquerFiltres = () => {
   const recherche = searchInput.value
   const commune = communeSelect.value
   const etat = etatSelect.value
+  const typologie = typologieSelect.value
 
   let lieuxFiltres = filtrerParRecherche(tousLesLieux, recherche)
-  lieuxFiltres = filtrerParCommune(lieuxFiltres, commune)
+  lieuxFiltres = filtrerParCommune(lieuxFiltres, commune) 
+  lieuxFiltres = filtrerParTypologie(lieuxFiltres, typologie)
   lieuxFiltres = filtrerParEtat(lieuxFiltres, etat)
 
   lieuxFiltresCourants = lieuxFiltres
@@ -411,6 +418,7 @@ const chargerLieux = async () => {
 searchInput.addEventListener("input", appliquerFiltres)
 communeSelect.addEventListener("change", appliquerFiltres)
 etatSelect.addEventListener("change", appliquerFiltres)
+typologieSelect.addEventListener("change", appliquerFiltres)
 
 previousPageButton.addEventListener("click", () => {
   if (pageActuelle > 1) {
