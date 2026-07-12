@@ -80,7 +80,7 @@ npm run dev
 ## Lancer les tests
 
 ```bash
-npm test
+npm run test
 ```
 
 ## Source des données
