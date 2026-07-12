@@ -32,6 +32,36 @@ export const formaterLieu = (lieu) => {
 }
 
 /* ===========================
+   Filtre qualité des lieux
+   =========================== */
+
+export const filtrerLieuxExploitables = (lieux) => {
+  return lieux.filter((lieu) => {
+    const aCoordonnees = lieu.coordonnees !== null
+    const aNom = lieu.nom !== "Nom inconnu"
+    const aCommune = lieu.commune !== "Commune inconnue"
+
+    const aDescriptionUtile =
+      lieu.description !== "Description non disponible" &&
+      lieu.description.length >= 80
+
+    const aLienOuContact =
+      lieu.siteInternet !== "" || lieu.email !== "" || lieu.telephone !== ""
+
+    const aInnovationConnue =
+      lieu.typeInnovation !== "Type d'innovation inconnu"
+
+    return (
+      aCoordonnees &&
+      aNom &&
+      aCommune &&
+      (aDescriptionUtile || (aLienOuContact && aInnovationConnue))
+    )
+  })
+}
+/* Supprime les lieux trop vides pour garder des cartes réellement exploitables. */
+
+/* ===========================
    Recherche texte
    =========================== */
 
@@ -60,8 +90,8 @@ export const filtrerParRecherche = (lieux, recherche) => {
       texteContient(lieu.description, rechercheMinuscule)
     )
   })
-  /* Cherche le texte dans plusieurs champs du lieu. */
 }
+/* Cherche le texte dans plusieurs champs du lieu. */
 
 /* ===========================
    Filtres utilisateur
@@ -71,26 +101,15 @@ export const filtrerParCommune = (lieux, commune) => {
   if (commune === "Toutes") {
     return lieux
   }
-  /* Si "Toutes" est sélectionné, aucun filtre commune n'est appliqué. */
 
   return lieux.filter((lieu) => lieu.commune === commune)
 }
 /* Garde uniquement les lieux de la commune sélectionnée. */
 
-export const filtrerParTypologie = (lieux, typologie) => {
-  if (typologie === "Toutes") {
-    return lieux
-  }
-
-  return lieux.filter((lieu) => lieu.typologie === typologie)
-}
-/* Garde uniquement les lieux avec la typologie sélectionnée. */
-
 export const filtrerParEtat = (lieux, etat) => {
   if (etat === "Tous") {
     return lieux
   }
-  /* Si "Tous" est sélectionné, aucun filtre état n'est appliqué. */
 
   return lieux.filter((lieu) => lieu.etat === etat)
 }
@@ -105,14 +124,6 @@ export const getCommunesUniques = (lieux) => {
   /* Transforme la liste des lieux en liste de communes. */
 
   return [...new Set(communes)].sort()
-  /* Set supprime les doublons, sort() trie de A à Z. */
-}
-
-export const getTypologiesUniques = (lieux) => {
-  const typologies = lieux.map((lieu) => lieu.typologie)
-  /* Transforme la liste des lieux en liste de typologies. */
-
-  return [...new Set(typologies)].sort()
   /* Set supprime les doublons, sort() trie de A à Z. */
 }
 
@@ -150,6 +161,8 @@ const motsClesTech = [
   "logiciel",
   "open source",
   "innovation technologique",
+  "tiers-lieu",
+  "tiers-lieux",
 ]
 /* Mots-clés qui indiquent qu'un lieu peut être intéressant pour la tech. */
 
@@ -206,13 +219,11 @@ const contientMotCle = (texte, motsCles) => {
 export const filtrerLieuxTech = (lieux) => {
   return lieux.filter((lieu) => {
     const texte = creerTexteRecherche(lieu)
-    /* Prépare un texte complet pour analyser le lieu. */
 
     const estTech = contientMotCle(texte, motsClesTech)
     const estHorsSujet = contientMotCle(texte, motsClesHorsSujet)
-    /* Vérifie si le lieu est tech et s'il contient un mot hors sujet. */
 
     return estTech && !estHorsSujet
-    /* Garde le lieu seulement s'il est tech et pas hors sujet. */
   })
 }
+/* Garde les lieux tech et retire les lieux hors sujet. */
