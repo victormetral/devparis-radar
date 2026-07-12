@@ -335,23 +335,48 @@ select {
    =========================== */
 
 .results-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   margin-bottom: var(--space-lg);
+  padding: var(--space-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.98),
+      rgba(245, 247, 255, 0.92)
+    ),
+    linear-gradient(135deg, rgba(43, 92, 255, 0.1), transparent);
+  box-shadow: var(--shadow-card);
 }
-/* Aligne le titre des résultats et les informations associées. */
+/* Transforme le résumé des résultats en bloc visuel plus clair. */
+
+.results-header__eyebrow {
+  margin: 0 0 var(--space-sm);
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+/* Style la petite accroche du bloc résultats. */
 
 .results-header h2 {
-  margin: 0 0 var(--space-sm);
-}
-/* Supprime la marge inutile autour du titre. */
-
-.results-header p {
   margin: 0;
+  font-size: 30px;
+  letter-spacing: -1px;
+}
+/* Style le nombre de lieux trouvés. */
+
+.results-header h2 span {
+  color: var(--color-primary);
+}
+/* Met le nombre en bleu pour attirer l'attention. */
+
+.results-header__meta {
+  margin: var(--space-sm) 0 0;
   color: var(--color-muted);
 }
-/* Style le compteur de lieux. */
+/* Style les informations de pagination sous le titre. */
 
 /* ===========================
    Liste des cartes
@@ -367,7 +392,6 @@ select {
 .place-card {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
   padding: var(--space-lg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -378,7 +402,7 @@ select {
     box-shadow 0.2s ease,
     border-color 0.2s ease;
 }
-/* Style général d'une carte de lieu. */
+/* Style général d'une carte sans créer de grands espaces vides. */
 
 .place-card:hover {
   transform: translateY(-3px);
@@ -392,9 +416,18 @@ select {
 }
 /* Met en évidence la carte sélectionnée depuis la carte Leaflet. */
 
+.place-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+/* Regroupe les textes de la carte avec un espacement régulier. */
+
 .place-card h3 {
   margin: 0;
+  color: var(--color-primary);
   font-size: 20px;
+  line-height: 1.25;
 }
 /* Style le nom du lieu. */
 
@@ -418,20 +451,33 @@ select {
   color: var(--color-primary);
   font-size: 13px;
   font-weight: bold;
+  text-transform: capitalize;
 }
 /* Affiche l'état du lieu sous forme de badge. */
 
 .place-card__description {
   margin-top: var(--space-sm);
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--color-muted);
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
 }
-/* Ajoute un peu d'espace avant la description. */
+/* Limite les descriptions trop longues pour garder des cartes homogènes. */
+
+.place-card__actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+}
+/* Regroupe les boutons sans laisser de grands espaces vides. */
 
 .place-card__link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-height: 40px;
-  margin-top: auto;
   padding: 0 var(--space-md);
   border: 1px solid var(--color-primary);
   border-radius: var(--radius-sm);
@@ -449,7 +495,6 @@ select {
 /* Ajoute un effet simple au survol. */
 
 .place-card__link--secondary {
-  margin-top: 0;
   background-color: var(--color-surface);
   color: var(--color-primary);
 }

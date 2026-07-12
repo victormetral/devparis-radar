@@ -1,7 +1,7 @@
 /* ===========================
    Formatage des données API
    =========================== */
-
+ 
 export const formaterLieu = (lieu) => {
   const latitude = lieu.xy?.lat
   const longitude = lieu.xy?.lon

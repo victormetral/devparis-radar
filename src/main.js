@@ -17,6 +17,7 @@ import {
   getCommunesUniques,
   getEtatsUniques,
   filtrerLieuxTech,
+  filtrerLieuxExploitables,
 } from "./utils.js"
 
 /* ===========================
@@ -47,6 +48,9 @@ const API_BASE_URL =
 
 const placesContainer = document.querySelector("#places-container")
 const counter = document.querySelector("#counter")
+const resultsMeta = document.querySelector("#results-meta")
+const resultsHeader = document.querySelector("#results-header")
+
 const searchInput = document.querySelector("#search-input")
 const clearSearchButton = document.querySelector("#clear-search")
 const communeSelect = document.querySelector("#commune-select")
@@ -61,7 +65,6 @@ const mapPanel = document.querySelector(".map-panel")
 const previousPageButton = document.querySelector("#previous-page")
 const nextPageButton = document.querySelector("#next-page")
 const paginationPages = document.querySelector("#pagination-pages")
-const pagination = document.querySelector(".pagination")
 /* Récupère les éléments HTML utilisés par JavaScript. */
 
 /* ===========================
@@ -120,7 +123,7 @@ const remplirFiltres = (lieux) => {
 /* Remplit les filtres commune et état à partir des données. */
 
 /* ===========================
-   Catégories lisibles pour l'utilisateur
+   Catégories lisibles
    =========================== */
 
 const categories = [
@@ -134,7 +137,7 @@ const categories = [
   },
   {
     label: "Coworking",
-    motsCles: ["coworking", "tiers-lieu", "espace partagé"],
+    motsCles: ["coworking", "tiers-lieu", "tiers-lieux", "espace partagé"],
   },
   {
     label: "Incubateur",
@@ -172,7 +175,7 @@ const afficherCategories = () => {
     button.addEventListener("click", () => {
       categorieActive = categorie.label
       pageActuelle = 1
-      appliquerFiltres()
+      appliquerFiltres(true)
     })
 
     categoryFilters.appendChild(button)
@@ -347,6 +350,14 @@ const creerCarteLieu = (lieu) => {
   card.classList.add("place-card")
   card.dataset.lieuId = lieu.id
 
+  const content = document.createElement("div")
+  content.classList.add("place-card__content")
+  /* Regroupe le contenu principal de la carte. */
+
+  const actions = document.createElement("div")
+  actions.classList.add("place-card__actions")
+  /* Regroupe tous les boutons de la carte pour éviter les grands espaces. */
+
   const title = document.createElement("h3")
   title.textContent = lieu.nom
 
@@ -363,7 +374,7 @@ const creerCarteLieu = (lieu) => {
   description.classList.add("place-card__description")
   description.textContent = lieu.description
 
-  card.append(
+  content.append(
     title,
     status,
     adresse,
@@ -379,7 +390,7 @@ const creerCarteLieu = (lieu) => {
     siteLink.target = "_blank"
     siteLink.rel = "noreferrer"
 
-    card.appendChild(siteLink)
+    actions.appendChild(siteLink)
   }
 
   if (lieu.email) {
@@ -389,7 +400,7 @@ const creerCarteLieu = (lieu) => {
       "place-card__link--secondary"
     )
 
-    card.appendChild(emailLink)
+    actions.appendChild(emailLink)
   }
 
   if (lieu.telephone) {
@@ -399,7 +410,7 @@ const creerCarteLieu = (lieu) => {
       "place-card__link--secondary"
     )
 
-    card.appendChild(telephoneLink)
+    actions.appendChild(telephoneLink)
   }
 
   if (lieu.coordonnees) {
@@ -413,12 +424,14 @@ const creerCarteLieu = (lieu) => {
       centrerCarteSurLieu(lieu)
     })
 
-    card.appendChild(mapButton)
+    actions.appendChild(mapButton)
   }
+
+  card.append(content, actions)
 
   return card
 }
-/* Crée une carte HTML complète pour un lieu. */
+/* Crée une carte avec un bloc contenu et un bloc boutons bien séparés. */
 
 const afficherLieux = (lieux) => {
   placesContainer.innerHTML = ""
@@ -444,7 +457,7 @@ const afficherLieux = (lieux) => {
 /* Affiche les cartes de la page actuelle. */
 
 /* ===========================
-   Pagination numérotée
+   Pagination
    =========================== */
 
 const paginerLieux = (lieux) => {
@@ -455,8 +468,22 @@ const paginerLieux = (lieux) => {
 }
 /* Découpe les résultats pour afficher seulement une page. */
 
+const getNombrePages = () => {
+  return Math.ceil(lieuxFiltresCourants.length / lieuxParPage) || 1
+}
+/* Calcule le nombre total de pages. */
+
+const mettreAJourResumeResultats = () => {
+  const nombrePages = getNombrePages()
+
+  counter.textContent = lieuxFiltresCourants.length
+
+  resultsMeta.textContent = `Page ${pageActuelle} sur ${nombrePages} · ${lieuxParPage} lieux par page`
+}
+/* Met à jour le bloc résumé des résultats. */
+
 const mettreAJourPagination = () => {
-  const nombrePages = Math.ceil(lieuxFiltresCourants.length / lieuxParPage) || 1
+  const nombrePages = getNombrePages()
 
   paginationPages.innerHTML = ""
 
@@ -476,7 +503,8 @@ const mettreAJourPagination = () => {
 
       afficherLieux(paginerLieux(lieuxFiltresCourants))
       mettreAJourPagination()
-      scrollVersPagination()
+      mettreAJourResumeResultats()
+      scrollVersResultats()
     })
 
     paginationPages.appendChild(button)
@@ -487,17 +515,17 @@ const mettreAJourPagination = () => {
 }
 /* Crée les boutons de pages et met à jour Précédent / Suivant. */
 
-const scrollVersPagination = () => {
-  if (!pagination) {
+const scrollVersResultats = () => {
+  if (!resultsHeader) {
     return
   }
 
-  pagination.scrollIntoView({
+  resultsHeader.scrollIntoView({
     behavior: "smooth",
-    block: "center",
+    block: "start",
   })
 }
-/* Garde les boutons de pagination visibles après un changement de page. */
+/* Après un changement de page, remonte automatiquement au début des résultats. */
 
 /* ===========================
    Filtres
@@ -511,11 +539,11 @@ const resetFiltres = () => {
 
   pageActuelle = 1
 
-  appliquerFiltres()
+  appliquerFiltres(true)
 }
 /* Réinitialise tous les filtres et revient à la première page. */
 
-const appliquerFiltres = () => {
+const appliquerFiltres = (avecScroll = false) => {
   const recherche = searchInput.value
   const commune = communeSelect.value
   const etat = etatSelect.value
@@ -529,12 +557,14 @@ const appliquerFiltres = () => {
   pageActuelle = 1
 
   afficherCategories()
-
-  const lieuxPaginees = paginerLieux(lieuxFiltresCourants)
-
-  afficherLieux(lieuxPaginees)
+  afficherLieux(paginerLieux(lieuxFiltresCourants))
   afficherMarqueurs(lieuxFiltresCourants)
   mettreAJourPagination()
+  mettreAJourResumeResultats()
+
+  if (avecScroll) {
+    scrollVersResultats()
+  }
 }
 /* Applique recherche, commune, catégorie et état, puis rafraîchit l'affichage. */
 
@@ -570,7 +600,7 @@ const chargerLieux = async () => {
 
     const lieuxFormates = resultatsApi.map((lieu) => formaterLieu(lieu))
 
-    tousLesLieux = filtrerLieuxTech(lieuxFormates)
+    tousLesLieux = filtrerLieuxExploitables(filtrerLieuxTech(lieuxFormates))
 
     remplirFiltres(tousLesLieux)
     afficherCategories()
@@ -580,6 +610,7 @@ const chargerLieux = async () => {
     afficherLieux(paginerLieux(lieuxFiltresCourants))
     afficherMarqueurs(lieuxFiltresCourants)
     mettreAJourPagination()
+    mettreAJourResumeResultats()
   } catch (error) {
     placesContainer.innerHTML =
       '<p class="empty-message">Impossible de charger les lieux pour le moment.</p>'
@@ -594,9 +625,18 @@ const chargerLieux = async () => {
    Événements
    =========================== */
 
-searchInput.addEventListener("input", appliquerFiltres)
-communeSelect.addEventListener("change", appliquerFiltres)
-etatSelect.addEventListener("change", appliquerFiltres)
+searchInput.addEventListener("input", () => {
+  appliquerFiltres(false)
+})
+
+communeSelect.addEventListener("change", () => {
+  appliquerFiltres(true)
+})
+
+etatSelect.addEventListener("change", () => {
+  appliquerFiltres(true)
+})
+
 resetFiltersButton.addEventListener("click", resetFiltres)
 /* Relance les filtres quand l'utilisateur interagit avec les champs. */
 
@@ -606,28 +646,30 @@ previousPageButton.addEventListener("click", () => {
 
     afficherLieux(paginerLieux(lieuxFiltresCourants))
     mettreAJourPagination()
-    scrollVersPagination()
+    mettreAJourResumeResultats()
+    scrollVersResultats()
   }
 })
-/* Affiche la page précédente. */
+/* Affiche la page précédente puis remonte en haut des résultats. */
 
 nextPageButton.addEventListener("click", () => {
-  const nombrePages = Math.ceil(lieuxFiltresCourants.length / lieuxParPage) || 1
+  const nombrePages = getNombrePages()
 
   if (pageActuelle < nombrePages) {
     pageActuelle += 1
 
     afficherLieux(paginerLieux(lieuxFiltresCourants))
     mettreAJourPagination()
-    scrollVersPagination()
+    mettreAJourResumeResultats()
+    scrollVersResultats()
   }
 })
-/* Affiche la page suivante. */
+/* Affiche la page suivante puis remonte en haut des résultats. */
 
 clearSearchButton.addEventListener("click", () => {
   searchInput.value = ""
   pageActuelle = 1
-  appliquerFiltres()
+  appliquerFiltres(true)
   searchInput.focus()
 })
 /* Vide la recherche et remet le focus dans le champ. */
