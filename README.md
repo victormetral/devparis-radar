@@ -4,6 +4,8 @@ DevParis Radar est une application web permettant d’explorer des lieux liés �
 
 Les données sont récupérées depuis l’API publique OpenData Paris puis affichées sous forme de cartes et sur une carte interactive.
 
+🔗 [Voir le site en ligne](https://devparis-radar.netlify.app)
+
 ## Fonctionnalités
 
 - Récupération des données avec `fetch` et `async/await`
